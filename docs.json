@@ -2,7 +2,9 @@
   "$schema": "https://mintlify.com/docs.json",
   "theme": "willow",
   "name": "Limestone Networks",
-  "appearance": "light",
+  "appearance": {
+    "default": "light"
+  },
   "colors": {
     "primary": "#004dd1",
     "light": "#1a5fd9",
