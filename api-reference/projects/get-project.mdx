@@ -1,0 +1,129 @@
+---
+title: 'Get Project'
+api: 'GET /project/{project_id}'
+description: 'Retrieve details for a specific project by its ID'
+---
+
+## Overview
+
+Returns detailed information about a specific project, including its status, creation date, and associated metadata. Projects are used to organize and group related resources like instances.
+
+## Path Parameters
+
+<ParamField path="project_id" type="string" required>
+  The unique project identifier. Format: `PROJ-{short_uuid}` (e.g., `PROJ-8ad55d52`)
+</ParamField>
+
+<RequestExample>
+
+```bash cURL
+curl https://api.dallas-idc.com/v2/project/PROJ-8ad55d52 \
+  -H "Authorization: Bearer YOUR_API_TOKEN"
+```
+
+```python Python
+import requests
+
+project_id = "PROJ-8ad55d52"
+response = requests.get(
+    f"https://api.dallas-idc.com/v2/project/{project_id}",
+    headers={"Authorization": "Bearer YOUR_API_TOKEN"}
+)
+print(response.json())
+```
+
+```javascript JavaScript
+const projectId = 'PROJ-8ad55d52';
+const response = await fetch(`https://api.dallas-idc.com/v2/project/${projectId}`, {
+  headers: {
+    'Authorization': 'Bearer YOUR_API_TOKEN'
+  }
+});
+const data = await response.json();
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json 200 - Success
+{
+  "uuid": "8ad55d52-c4a7-473a-8831-d20c49021538",
+  "short_uuid": "8ad55d52",
+  "project_id": "PROJ-8ad55d52",
+  "status": "Online",
+  "name": null,
+  "metadata": [],
+  "item_type": "project",
+  "create_date": "2025-11-28 22:47:34",
+  "client_id": 557923,
+  "unpaid_invoices": 0
+}
+```
+
+```json 401 - Unauthorized
+{
+  "error": "Unauthorized",
+  "message": "Invalid or expired token"
+}
+```
+
+```json 404 - Not Found
+{
+  "error": "Not Found",
+  "message": "Project not found"
+}
+```
+
+</ResponseExample>
+
+## Response Fields
+
+<ResponseField name="uuid" type="string">
+  The full UUID of the project (e.g., `8ad55d52-c4a7-473a-8831-d20c49021538`)
+</ResponseField>
+
+<ResponseField name="short_uuid" type="string">
+  The shortened UUID used in the project_id (e.g., `8ad55d52`)
+</ResponseField>
+
+<ResponseField name="project_id" type="string">
+  The unique project identifier in the format `PROJ-{short_uuid}`
+</ResponseField>
+
+<ResponseField name="status" type="string">
+  The current status of the project. Possible values include:
+  - `Online` - Project is active and operational
+  - `Suspended` - Project has been suspended
+</ResponseField>
+
+<ResponseField name="name" type="string | null">
+  The user-defined name for the project, or `null` if not set
+</ResponseField>
+
+<ResponseField name="metadata" type="array">
+  Array of key-value pairs containing custom project metadata
+</ResponseField>
+
+<ResponseField name="item_type" type="string">
+  The type of resource, always `project` for this endpoint
+</ResponseField>
+
+<ResponseField name="create_date" type="string">
+  The date and time when the project was created (format: `YYYY-MM-DD HH:MM:SS`)
+</ResponseField>
+
+<ResponseField name="client_id" type="integer">
+  The unique identifier of the client account that owns this project
+</ResponseField>
+
+<ResponseField name="unpaid_invoices" type="integer">
+  The number of unpaid invoices associated with this project
+</ResponseField>
+
+## Use Cases
+
+- **Resource Management**: View project details before provisioning new instances
+- **Billing Verification**: Check for unpaid invoices associated with a project
+- **Status Monitoring**: Verify a project's operational status
+- **Project Identification**: Retrieve full project details using the short project ID

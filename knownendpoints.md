@@ -17,7 +17,7 @@
 
 - [x] `https://api.dallas-idc.com/v2/core`
 
-- [ ] `https://api.dallas-idc.com/v2/project/{PROJECT_NAME}`
+- [x] `https://api.dallas-idc.com/v2/project/{PROJECT_NAME}`
 
 - [ ] `https://api.dallas-idc.com/v2/instance?project={PROJECT_NAME}`
 
