@@ -27,7 +27,7 @@
 
 # Known POST Endpoints
 
-- [ ] `https://api.dallas-idc.com/v2/sshkey`
+- [x] `https://api.dallas-idc.com/v2/sshkey`
   - Example payload:
     ```json
     {

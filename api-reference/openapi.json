@@ -388,6 +388,53 @@
             }
           }
         }
+      },
+      "post": {
+        "summary": "Create SSH Key",
+        "description": "Add a new SSH public key to your account for use when provisioning server instances",
+        "operationId": "createSshKey",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSshKeyRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "SSH key created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SshKey"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationError"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/current_user": {
@@ -886,6 +933,30 @@
           }
         },
         "required": ["error", "message"]
+      },
+      "CreateSshKeyRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "A display name for the SSH key (used when selecting keys during instance creation)"
+          },
+          "pubkey": {
+            "type": "string",
+            "description": "The full SSH public key string (e.g., ssh-rsa AAAA... or ssh-ed25519 AAAA...)"
+          }
+        },
+        "required": ["name", "pubkey"]
+      },
+      "ValidationError": {
+        "type": "object",
+        "description": "Validation error response with field-specific error messages",
+        "additionalProperties": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
       }
     },
     "securitySchemes": {

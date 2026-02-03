@@ -1,0 +1,149 @@
+---
+title: 'Create SSH Key'
+api: 'POST /sshkey'
+description: 'Add a new SSH public key to your account'
+---
+
+## Overview
+
+Adds a new SSH public key to your account. Once added, the key can be selected when provisioning new server instances to enable SSH access.
+
+## Request Body
+
+<ParamField body="name" type="string" required>
+  A display name for the SSH key. This name is used when selecting keys during instance creation.
+</ParamField>
+
+<ParamField body="pubkey" type="string" required>
+  The full SSH public key string. Supported formats include RSA, ED25519, and ECDSA keys.
+</ParamField>
+
+<RequestExample>
+
+```bash cURL
+curl -X POST https://api.dallas-idc.com/v2/sshkey \
+  -H "Authorization: Bearer YOUR_API_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "my-laptop-key",
+    "pubkey": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAB... user@hostname"
+  }'
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    "https://api.dallas-idc.com/v2/sshkey",
+    headers={
+        "Authorization": "Bearer YOUR_API_TOKEN",
+        "Content-Type": "application/json"
+    },
+    json={
+        "name": "my-laptop-key",
+        "pubkey": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAB... user@hostname"
+    }
+)
+print(response.json())
+```
+
+```javascript JavaScript
+const response = await fetch('https://api.dallas-idc.com/v2/sshkey', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Bearer YOUR_API_TOKEN',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    name: 'my-laptop-key',
+    pubkey: 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAB... user@hostname'
+  })
+});
+const data = await response.json();
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json 200 - Success
+{
+  "id": 10655,
+  "fingerprint": "b9:78:ef:17:2e:76:d1:39:9a:f1:63:41:14:19:3e:c9",
+  "pubkey": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAB...",
+  "comment": "user@hostname",
+  "name": "my-laptop-key"
+}
+```
+
+```json 422 - Validation Error (Missing Fields)
+{
+  "pubkey": ["The pubkey field is required."],
+  "name": ["The name field is required."]
+}
+```
+
+```json 422 - Validation Error (Invalid Key Format)
+{
+  "pubkey": ["Public key is not in a valid format. Please check the key and try again."]
+}
+```
+
+```json 422 - Validation Error (Duplicate Key)
+{
+  "fingerprint": ["Public key is already in use. Please use a different key."]
+}
+```
+
+```json 401 - Unauthorized
+{
+  "error": "Unauthorized",
+  "message": "Invalid or expired token"
+}
+```
+
+</ResponseExample>
+
+## Response Fields
+
+<ResponseField name="id" type="integer">
+  Unique identifier for the newly created SSH key
+</ResponseField>
+
+<ResponseField name="fingerprint" type="string">
+  The MD5 fingerprint of the SSH key in colon-separated hexadecimal format
+</ResponseField>
+
+<ResponseField name="pubkey" type="string">
+  The full public key string that was uploaded
+</ResponseField>
+
+<ResponseField name="comment" type="string">
+  The comment field extracted from the SSH key, typically containing `user@hostname`
+</ResponseField>
+
+<ResponseField name="name" type="string">
+  The display name you provided for the SSH key
+</ResponseField>
+
+## Supported Key Types
+
+| Type | Example Prefix |
+|------|----------------|
+| RSA | `ssh-rsa AAAA...` |
+| ED25519 | `ssh-ed25519 AAAA...` |
+| ECDSA | `ecdsa-sha2-nistp256 AAAA...` |
+
+## Generating SSH Keys
+
+If you need to generate a new SSH key pair, you can use the following commands:
+
+```bash ED25519 (Recommended)
+ssh-keygen -t ed25519 -C "your_email@example.com"
+```
+
+```bash RSA (4096-bit)
+ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
+```
+
+After generating, the public key (ending in `.pub`) can be uploaded using this endpoint.
