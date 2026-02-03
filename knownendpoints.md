@@ -19,7 +19,7 @@
 
 - [x] `https://api.dallas-idc.com/v2/project/{PROJECT_NAME}`
 
-- [ ] `https://api.dallas-idc.com/v2/instance?project={PROJECT_NAME}`
+- [x] `https://api.dallas-idc.com/v2/instance?project={PROJECT_NAME}`
 
 - [ ] `https://api.dallas-idc.com/v2/job/{JOB_ID}` (Monitoring job status)
 
