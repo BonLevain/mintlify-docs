@@ -1,0 +1,130 @@
+---
+title: 'Get Facility Stock'
+api: 'GET /facility/{location}/stock'
+description: 'Retrieve server availability information for a specific datacenter location'
+---
+
+## Overview
+
+Returns real-time server availability for a specified datacenter facility. Servers are categorized by their availability status: available for immediate deployment, low stock, or unavailable.
+
+<ParamField path="location" type="string" required>
+  The facility code (e.g., DFW1, LAX1, SLC1). See [List Facilities](/api-reference/facilities/list-facilities) for available locations.
+</ParamField>
+
+## Available Locations
+
+| Code | Location |
+|------|----------|
+| DFW1, DFW2 | Dallas, TX |
+| LAX1, LAX2 | Los Angeles, CA |
+| SLC1, SLC2 | Salt Lake City, UT |
+| JFK1, JFK2 | New York, NY |
+| MIA1, MIA2 | Miami, FL |
+| ORD1, ORD2 | Chicago, IL |
+| IAD1 | Ashburn, VA |
+| PDX1 | Portland, OR |
+| FRA1, FRA2 | Frankfurt, Germany |
+| PAR1 | Paris, France |
+| AMS1 | Amsterdam, Netherlands |
+| TYO1, TYO2 | Tokyo, Japan |
+| SIN1 | Singapore |
+
+<RequestExample>
+
+```bash cURL
+curl https://api.dallas-idc.com/v2/facility/DFW1/stock \
+  -H "Authorization: Bearer YOUR_API_TOKEN"
+```
+
+```python Python
+import requests
+
+response = requests.get(
+    "https://api.dallas-idc.com/v2/facility/DFW1/stock",
+    headers={"Authorization": "Bearer YOUR_API_TOKEN"}
+)
+print(response.json())
+```
+
+```javascript JavaScript
+const response = await fetch('https://api.dallas-idc.com/v2/facility/DFW1/stock', {
+  headers: {
+    'Authorization': 'Bearer YOUR_API_TOKEN'
+  }
+});
+const data = await response.json();
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json 200 - Success
+{
+  "facility": "DFW1",
+  "available": [
+    "bm1.epyc7402.1",
+    "bm1.e2234.1"
+  ],
+  "low": [
+    "bm1.epyc7281.2",
+    "bm1.xeon2650v4x2.1",
+    "bm1.ryzen7950x.1"
+  ],
+  "unavailable": [
+    "bm1.1230v1.1",
+    "bm1.e2176g.1",
+    "bm1.epyc7282.1"
+  ]
+}
+```
+
+```json 404 - Not Found
+{
+  "error": "Not Found",
+  "message": "Facility not found"
+}
+```
+
+```json 401 - Unauthorized
+{
+  "error": "Unauthorized",
+  "message": "Invalid or expired token"
+}
+```
+
+</ResponseExample>
+
+## Response Fields
+
+<ResponseField name="facility" type="string">
+  The facility code that was queried
+</ResponseField>
+
+<ResponseField name="available" type="array">
+  List of server core types that are immediately available for deployment
+</ResponseField>
+
+<ResponseField name="low" type="array">
+  List of server core types with limited availability (order soon)
+</ResponseField>
+
+<ResponseField name="unavailable" type="array">
+  List of server core types that are currently out of stock
+</ResponseField>
+
+## Use Cases
+
+- **Pre-deployment Check**: Verify server availability before creating an instance
+- **Capacity Planning**: Monitor stock levels across facilities for provisioning decisions
+- **Multi-Region Deployment**: Find facilities with available capacity for your required server type
+- **Inventory Monitoring**: Track stock levels for automated procurement workflows
+
+## Stock Status Guide
+
+| Status | Meaning | Recommendation |
+|--------|---------|----------------|
+| `available` | Ready for immediate deployment | Safe to provision |
+| `low` | Limited quantity remaining | Order soon if needed |
+| `unavailable` | Currently out of stock | Check other facilities or wait for restock |
