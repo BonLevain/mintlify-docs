@@ -13,7 +13,7 @@
 
 - [x] `https://api.dallas-idc.com/v2/image`
 
-- [ ] `https://api.dallas-idc.com/v2/facility`
+- [x] `https://api.dallas-idc.com/v2/facility`
 
 - [ ] `https://api.dallas-idc.com/v2/core`
 
