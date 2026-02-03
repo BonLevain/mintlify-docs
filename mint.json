@@ -34,14 +34,9 @@
   ],
   "anchors": [
     {
-      "name": "Community",
-      "icon": "slack",
-      "url": "https://www.limestonenetworks.com/community"
-    },
-    {
       "name": "Blog",
       "icon": "newspaper",
-      "url": "https://www.limestonenetworks.com/blog"
+      "url": "https://www.limestonenetworks.com/about/blog"
     }
   ],
   "navigation": [

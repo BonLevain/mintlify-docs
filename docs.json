@@ -72,13 +72,8 @@
     "global": {
       "anchors": [
         {
-          "anchor": "Community",
-          "href": "https://www.limestonenetworks.com/community",
-          "icon": "slack"
-        },
-        {
           "anchor": "Blog",
-          "href": "https://www.limestonenetworks.com/blog",
+          "href": "https://www.limestonenetworks.com/about/blog",
           "icon": "newspaper"
         }
       ]
