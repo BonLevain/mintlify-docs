@@ -1,0 +1,87 @@
+---
+title: "Get Instance"
+openapi: "GET /v2/instance/{instance_id}"
+---
+
+Retrieve detailed information about a specific instance by its unique identifier.
+
+## Path Parameters
+
+<ParamField path="instance_id" type="string" required>
+  The unique identifier (UUID) of the instance to retrieve.
+</ParamField>
+
+## Response
+
+Returns an [Instance](/api-reference/schemas/instance) object containing:
+
+- Instance UUID and metadata
+- Server and project associations
+- Current status and provisioning details
+- Network configuration including IP subnets
+- Hardware specifications (core, facility)
+- Associated tags and custom metadata
+
+## Example Request
+
+```bash
+curl -X GET "https://api.dallas-idc.com/v2/instance/{instance_id}" \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
+```
+
+## Example Response
+
+```json
+{
+  "uuid": "550e8400-e29b-41d4-a716-446655440000",
+  "short_uuid": "550e8400",
+  "name": "web-server-01",
+  "hostname": "web-server-01.example.com",
+  "server_id": "12345",
+  "project_id": "proj-abc123",
+  "status": "active",
+  "management_ip": "192.168.1.100",
+  "provision_date": "2024-01-15T10:30:00Z",
+  "item_type": "instance",
+  "core": {
+    "id": "bm1.e1230v1.1",
+    "name": "Intel Xeon E3-1230",
+    "rate": 0.15,
+    "interval": "hourly"
+  },
+  "facility": {
+    "facility_name": "dal1",
+    "facility_title": "Dallas 1",
+    "facility_description": "Dallas, TX Data Center"
+  },
+  "ip_subnets": [
+    {
+      "block": "192.168.1.0/24",
+      "network": "192.168.1.0",
+      "cidr": 24,
+      "netmask": "255.255.255.0",
+      "network_type": "public"
+    }
+  ],
+  "tags": ["production", "web"],
+  "metadata": [
+    {
+      "key": "environment",
+      "value": "production"
+    }
+  ]
+}
+```
+
+## Use Cases
+
+- **Instance Monitoring**: Retrieve current status and configuration of a specific server
+- **Automation Scripts**: Get instance details for infrastructure automation workflows
+- **Troubleshooting**: Check instance configuration and network settings when debugging issues
+- **Inventory Management**: Fetch instance details for asset tracking and documentation
+
+## Related Endpoints
+
+- [List Instances](/api-reference/instances/list-instances) - Get all instances
+- [Create Instance](/api-reference/instances/create-instance) - Provision a new instance
+- [Delete Instance](/api-reference/instances/delete-instance) - Cancel an instance

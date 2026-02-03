@@ -1,0 +1,101 @@
+---
+title: "Get Event Log"
+api: "GET /v2/event/{event_id}"
+description: "Get event log by ID"
+---
+
+Retrieve a single event log by its unique identifier.
+
+## Path Parameters
+
+<ParamField path="event_id" type="string" required>
+  The unique identifier of the event to retrieve.
+</ParamField>
+
+## Response
+
+<ResponseField name="uuid" type="string">
+  The unique identifier for the event.
+</ResponseField>
+
+<ResponseField name="event" type="string">
+  The type of the event.
+</ResponseField>
+
+<ResponseField name="created_at" type="string">
+  The timestamp when the event occurred.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  A human-readable message describing the event.
+</ResponseField>
+
+<ResponseField name="username" type="string">
+  The user who triggered this event.
+</ResponseField>
+
+<ResponseField name="data" type="string">
+  Additional event data in JSON format.
+</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl -X GET "https://api.dallas-idc.com/v2/event/evt-abc123" \
+  -H "Authorization: Bearer YOUR_API_TOKEN"
+```
+
+```python Python
+import requests
+
+response = requests.get(
+    "https://api.dallas-idc.com/v2/event/evt-abc123",
+    headers={"Authorization": "Bearer YOUR_API_TOKEN"}
+)
+
+event = response.json()
+```
+
+```javascript JavaScript
+const response = await fetch(
+  "https://api.dallas-idc.com/v2/event/evt-abc123",
+  {
+    headers: {
+      Authorization: "Bearer YOUR_API_TOKEN",
+    },
+  }
+);
+
+const event = await response.json();
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200
+{
+  "uuid": "evt-abc123",
+  "event": "instance.created",
+  "created_at": "2024-01-15T10:30:00Z",
+  "message": "Instance was created successfully",
+  "username": "john.doe",
+  "data": "{\"instance_id\": \"abc123\", \"core\": \"bm1.e1230v1.1\"}"
+}
+```
+
+```json 401
+{
+  "message": "Unauthenticated"
+}
+```
+
+```json 403
+{
+  "message": "Unauthorized request"
+}
+```
+
+```json 404
+{
+  "message": "Event not found"
+}
+```
+</ResponseExample>

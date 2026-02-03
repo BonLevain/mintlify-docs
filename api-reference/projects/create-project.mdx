@@ -1,0 +1,153 @@
+---
+title: 'Create Project'
+api: 'POST /project'
+description: 'Create a new project to organize and group your bare metal instances'
+---
+
+## Overview
+
+Creates a new project in your client account. Projects serve as organizational containers for grouping related bare metal instances and resources. Each project has its own resource quotas, billing, and access controls.
+
+## Request Body
+
+<ParamField body="name" type="string">
+  A friendly display name for the project. This helps identify the project in the dashboard and API responses.
+</ParamField>
+
+<RequestExample>
+
+```bash cURL
+curl -X POST https://api.dallas-idc.com/v2/project \
+  -H "Authorization: Bearer YOUR_API_TOKEN" \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "name=Production Environment"
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    "https://api.dallas-idc.com/v2/project",
+    headers={"Authorization": "Bearer YOUR_API_TOKEN"},
+    data={"name": "Production Environment"}
+)
+print(response.json())
+```
+
+```javascript JavaScript
+const response = await fetch('https://api.dallas-idc.com/v2/project', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Bearer YOUR_API_TOKEN',
+    'Content-Type': 'application/x-www-form-urlencoded'
+  },
+  body: new URLSearchParams({
+    name: 'Production Environment'
+  })
+});
+const project = await response.json();
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json 201 - Created
+{
+  "uuid": "9bf66e73-d5b8-584b-9942-e31d60032649",
+  "short_uuid": "9bf66e73",
+  "project_id": "PROJ-9bf66e73",
+  "status": "Online",
+  "name": "Production Environment",
+  "metadata": [],
+  "item_type": "project",
+  "create_date": "2025-12-01 14:30:22",
+  "client_id": 557923,
+  "unpaid_invoices": 0
+}
+```
+
+```json 400 - Bad Request
+{
+  "message": "Unable to create project",
+  "status": false
+}
+```
+
+```json 401 - Unauthorized
+{
+  "error": "Unauthorized",
+  "message": "Invalid or expired token"
+}
+```
+
+```json 403 - Forbidden
+{
+  "error": "Forbidden",
+  "message": "You do not have permission to create projects"
+}
+```
+
+```json 422 - Validation Error
+{
+  "message": "The name field is required",
+  "status": false
+}
+```
+
+</ResponseExample>
+
+## Response Fields
+
+<ResponseField name="uuid" type="string">
+  The full UUID of the newly created project (e.g., `9bf66e73-d5b8-584b-9942-e31d60032649`)
+</ResponseField>
+
+<ResponseField name="short_uuid" type="string">
+  The shortened UUID used in the project_id (e.g., `9bf66e73`)
+</ResponseField>
+
+<ResponseField name="project_id" type="string">
+  The unique project identifier in the format `PROJ-{short_uuid}`
+</ResponseField>
+
+<ResponseField name="status" type="string">
+  The current status of the project. New projects start with status `Online`.
+</ResponseField>
+
+<ResponseField name="name" type="string | null">
+  The user-defined name for the project
+</ResponseField>
+
+<ResponseField name="metadata" type="array">
+  Array of key-value pairs containing custom project metadata. Empty for new projects.
+</ResponseField>
+
+<ResponseField name="item_type" type="string">
+  The type of resource, always `project` for this endpoint
+</ResponseField>
+
+<ResponseField name="create_date" type="string">
+  The date and time when the project was created (format: `YYYY-MM-DD HH:MM:SS`)
+</ResponseField>
+
+<ResponseField name="client_id" type="integer">
+  The unique identifier of the client account that owns this project
+</ResponseField>
+
+<ResponseField name="unpaid_invoices" type="integer">
+  The number of unpaid invoices associated with this project. Always `0` for new projects.
+</ResponseField>
+
+## Use Cases
+
+- **Environment Separation**: Create separate projects for production, staging, and development environments
+- **Client Isolation**: Service providers can create projects for each of their customers
+- **Cost Tracking**: Use projects to track billing and resource usage by department or team
+- **Resource Organization**: Group related servers and infrastructure under a common project
+
+## Notes
+
+- Your account must have permission to create projects. Use the [Can Create Project](/api-reference/user/can-create-project) endpoint to check eligibility.
+- New projects are created with default quota limits. Contact support to request quota increases.
+- Projects cannot be deleted if they contain active instances. Delete all instances first.

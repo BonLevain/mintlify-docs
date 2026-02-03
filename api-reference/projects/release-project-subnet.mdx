@@ -1,0 +1,66 @@
+---
+title: "Release Project Subnet"
+openapi: "DELETE /v2/project/{project_id}/subnet"
+---
+
+Release an IP subnet from a project. This deallocates the IP prefix from the project, making it available for reallocation.
+
+## Path Parameters
+
+<ParamField path="project_id" type="string" required>
+  The unique identifier (UUID) of the project that the prefix is allocated to.
+</ParamField>
+
+## Request Body
+
+<ParamField body="prefix" type="string" required>
+  The IP prefix to release from the project (e.g., "192.168.1.0/24").
+</ParamField>
+
+## Response
+
+Returns a [Result](/api-reference/schemas/result) object confirming the deallocation.
+
+## Example Request
+
+```bash
+curl -X DELETE "https://api.dallas-idc.com/v2/project/{project_id}/subnet" \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "prefix=192.168.1.0/24"
+```
+
+## Example Response
+
+```json
+{
+  "message": "IP prefix deallocated successfully",
+  "status": true
+}
+```
+
+## Error Responses
+
+| Status Code | Description |
+|-------------|-------------|
+| 400 | Bad request - Invalid subnet format or subnet cannot be released |
+| 403 | Unauthorized - You don't have permission to release this subnet |
+| 422 | Invalid parameters - The prefix parameter is invalid |
+
+## Use Cases
+
+- **Resource Cleanup**: Release unused IP subnets when they're no longer needed
+- **IP Management**: Free up IP addresses for use in other projects
+- **Cost Optimization**: Deallocate unused IP resources to reduce costs
+
+## Important Notes
+
+<Warning>
+Before releasing a subnet, ensure that no instances are actively using IP addresses from this subnet. Releasing a subnet that is in use may cause network connectivity issues.
+</Warning>
+
+## Related Endpoints
+
+- [Get Project Subnets](/api-reference/projects/get-project-subnets) - List all subnets allocated to a project
+- [Assign Instance Subnet](/api-reference/instances/assign-instance-subnet) - Assign a subnet to an instance
+- [Remove Instance Subnet](/api-reference/instances/remove-instance-subnet) - Remove a subnet from an instance

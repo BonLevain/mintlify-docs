@@ -1,0 +1,78 @@
+---
+title: 'Can Create Project'
+api: 'GET /user/can_create_project'
+description: 'Check whether your user has the ability to create more bare metal cloud projects'
+---
+
+## Overview
+
+Returns whether the currently authenticated user has permission and quota available to create additional bare metal cloud projects. Use this endpoint to check eligibility before attempting to create a new project.
+
+<RequestExample>
+
+```bash cURL
+curl https://api.dallas-idc.com/v2/user/can_create_project \
+  -H "Authorization: Bearer YOUR_API_TOKEN"
+```
+
+```python Python
+import requests
+
+response = requests.get(
+    "https://api.dallas-idc.com/v2/user/can_create_project",
+    headers={"Authorization": "Bearer YOUR_API_TOKEN"}
+)
+print(response.json())
+```
+
+```javascript JavaScript
+const response = await fetch('https://api.dallas-idc.com/v2/user/can_create_project', {
+  headers: {
+    'Authorization': 'Bearer YOUR_API_TOKEN'
+  }
+});
+const data = await response.json();
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json 200 - Can Create Projects
+{
+  "status": true,
+  "message": "User can create projects"
+}
+```
+
+```json 403 - Cannot Create Projects
+{
+  "status": false,
+  "message": "User has reached maximum project limit"
+}
+```
+
+```json 401 - Unauthorized
+{
+  "error": "Unauthorized",
+  "message": "Invalid or expired token"
+}
+```
+
+</ResponseExample>
+
+## Response Fields
+
+<ResponseField name="status" type="boolean">
+  Indicates whether the user can create projects (`true`) or not (`false`)
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Human-readable explanation of the result
+</ResponseField>
+
+## Use Cases
+
+- **Pre-validation**: Check if the user can create a project before displaying the create project form
+- **Quota Management**: Determine if the user has reached their project limit
+- **Conditional UI**: Show or hide project creation options based on eligibility

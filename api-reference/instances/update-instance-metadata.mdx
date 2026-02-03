@@ -1,0 +1,104 @@
+---
+title: "Update Instance Metadata"
+api: "PUT /v2/instance/{instance_id}/metadata/{key}"
+description: "Update an existing metadata value for an instance"
+---
+
+## Path Parameters
+
+<ParamField path="instance_id" type="string" required>
+  The unique identifier of the instance
+</ParamField>
+
+<ParamField path="key" type="string" required>
+  The metadata key to update
+</ParamField>
+
+## Body Parameters
+
+<ParamField body="value" type="string" required>
+  The new value for the metadata entry
+</ParamField>
+
+<ParamField body="mutability" type="integer" default="1">
+  The mutability setting for the metadata. Controls whether the metadata can be modified after this update.
+</ParamField>
+
+## Response
+
+<ResponseField name="key" type="string">
+  The metadata key
+</ResponseField>
+
+<ResponseField name="value" type="string">
+  The updated metadata value
+</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl -X PUT "https://api.dallas-idc.com/v2/instance/{instance_id}/metadata/{key}" \
+  -H "Authorization: Bearer YOUR_API_TOKEN" \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "value=staging"
+```
+
+```python Python
+import requests
+
+instance_id = "your-instance-id"
+key = "environment"
+url = f"https://api.dallas-idc.com/v2/instance/{instance_id}/metadata/{key}"
+
+headers = {
+    "Authorization": "Bearer YOUR_API_TOKEN"
+}
+
+data = {
+    "value": "staging"
+}
+
+response = requests.put(url, headers=headers, data=data)
+print(response.json())
+```
+
+```javascript JavaScript
+const instanceId = "your-instance-id";
+const key = "environment";
+
+fetch(`https://api.dallas-idc.com/v2/instance/${instanceId}/metadata/${key}`, {
+  method: "PUT",
+  headers: {
+    "Authorization": "Bearer YOUR_API_TOKEN",
+    "Content-Type": "application/x-www-form-urlencoded"
+  },
+  body: new URLSearchParams({
+    value: "staging"
+  })
+})
+  .then(response => response.json())
+  .then(data => console.log(data));
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200
+{
+  "key": "environment",
+  "value": "staging"
+}
+```
+
+```json 400
+{
+  "message": "Bad request",
+  "status": false
+}
+```
+
+```json 403
+{
+  "message": "Unauthorized request",
+  "status": false
+}
+```
+</ResponseExample>

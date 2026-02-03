@@ -1,0 +1,88 @@
+---
+title: "Delete Instance"
+openapi: "DELETE /v2/instance/{instance_id}"
+---
+
+Delete and cancel a bare metal server instance. This operation will terminate the instance and release all associated resources.
+
+## Path Parameters
+
+<ParamField path="instance_id" type="string" required>
+  The unique identifier of the instance to delete.
+
+  Example: `inst-550e8400-e29b-41d4-a716-446655440000`
+</ParamField>
+
+## Query Parameters
+
+<ParamField query="wait" type="boolean">
+  Whether to wait for the deletion job to complete before returning. If `false` (default), returns immediately with the job ID.
+</ParamField>
+
+## Response
+
+Returns a [Job](/api-reference/jobs/get-job) object representing the deletion task. Use the job ID to track the progress of the instance deletion.
+
+## Example Request
+
+```bash
+curl -X DELETE "https://api.dallas-idc.com/v2/instance/inst-550e8400-e29b-41d4-a716-446655440000" \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
+```
+
+## Example Response
+
+```json
+{
+  "created_at": "2024-01-15T14:30:00Z",
+  "update_at": "2024-01-15T14:30:00Z",
+  "status": "pending",
+  "name": "instance.delete",
+  "job_identifier": "job-660e8400-e29b-41d4-a716-446655440001",
+  "display_name": "Delete Instance",
+  "metadata": [
+    {
+      "key": "instance_id",
+      "value": "inst-550e8400-e29b-41d4-a716-446655440000"
+    }
+  ],
+  "statuses": [
+    {
+      "created_at": "2024-01-15T14:30:00Z",
+      "job_type": "instance.delete",
+      "status": "pending",
+      "metadata": []
+    }
+  ]
+}
+```
+
+## Deletion Process
+
+When you delete an instance:
+
+1. **Job Created** - A deletion job is queued and a job ID is returned
+2. **Services Stopped** - Running services and processes are terminated
+3. **Network Released** - IP addresses and network configurations are released
+4. **Storage Wiped** - Server disks are securely wiped
+5. **Hardware Deallocated** - The physical server is returned to the inventory pool
+
+<Warning>
+  This action is irreversible. All data on the instance will be permanently destroyed. Make sure to back up any important data before deleting an instance.
+</Warning>
+
+## Error Responses
+
+| Status Code | Description |
+|-------------|-------------|
+| 401 | Unauthorized - Invalid or missing authentication token |
+| 403 | Forbidden - You don't have permission to delete this instance |
+| 404 | Not Found - The specified instance does not exist |
+| 500 | Internal Server Error - An error occurred during deletion |
+
+## Related Endpoints
+
+- [Get Instance](/api-reference/instances/get-instance) - Get instance details before deletion
+- [List Instances](/api-reference/instances/list-instances) - List all instances
+- [Get Job](/api-reference/jobs/get-job) - Track deletion progress
+- [Create Instance](/api-reference/instances/create-instance) - Provision a new instance

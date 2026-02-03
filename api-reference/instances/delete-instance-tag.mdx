@@ -1,0 +1,43 @@
+---
+title: 'Delete Instance Tag'
+api: 'DELETE /v2/instance/{instance_id}/tag/{tag}'
+description: 'Delete a tag from an instance'
+---
+
+Remove a tag from a specific instance. This operation is useful for updating the categorization of your instances.
+
+## Path Parameters
+
+<ParamField path="instance_id" type="string" required>
+  The unique identifier of the instance to remove the tag from.
+</ParamField>
+
+<ParamField path="tag" type="string" required>
+  The tag to remove from the instance.
+</ParamField>
+
+## Response
+
+<ResponseField name="message" type="string">
+  A message indicating the result of the operation.
+</ResponseField>
+
+<ResponseField name="status" type="boolean">
+  Indicates whether the operation was successful.
+</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl -X DELETE "https://api.dallas-idc.com/v2/instance/{instance_id}/tag/production" \
+  -H "Authorization: Bearer YOUR_API_TOKEN"
+```
+</RequestExample>
+
+<ResponseExample>
+```json 202
+{
+  "message": "Tag deleted",
+  "status": true
+}
+```
+</ResponseExample>

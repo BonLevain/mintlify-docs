@@ -1,0 +1,111 @@
+---
+title: "Create Client Metadata"
+api: "POST /v2/client/{client_id}/metadata"
+description: "Create a new metadata key-value pair for a client"
+---
+
+## Path Parameters
+
+<ParamField path="client_id" type="string" required>
+  The unique identifier of the client
+</ParamField>
+
+## Body Parameters
+
+<ParamField body="key" type="string" required>
+  The key for the metadata entry
+</ParamField>
+
+<ParamField body="value" type="string" required>
+  The value for the metadata entry
+</ParamField>
+
+<ParamField body="mutability" type="integer" default="1">
+  The mutability setting for the metadata. Controls whether the metadata can be modified after creation.
+</ParamField>
+
+## Response
+
+<ResponseField name="key" type="string">
+  The metadata key
+</ResponseField>
+
+<ResponseField name="value" type="string">
+  The metadata value
+</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl -X POST "https://api.dallas-idc.com/v2/client/{client_id}/metadata" \
+  -H "Authorization: Bearer YOUR_API_TOKEN" \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "key=department&value=engineering"
+```
+
+```python Python
+import requests
+
+client_id = "your-client-id"
+url = f"https://api.dallas-idc.com/v2/client/{client_id}/metadata"
+
+headers = {
+    "Authorization": "Bearer YOUR_API_TOKEN"
+}
+
+data = {
+    "key": "department",
+    "value": "engineering"
+}
+
+response = requests.post(url, headers=headers, data=data)
+print(response.json())
+```
+
+```javascript JavaScript
+const clientId = "your-client-id";
+
+fetch(`https://api.dallas-idc.com/v2/client/${clientId}/metadata`, {
+  method: "POST",
+  headers: {
+    "Authorization": "Bearer YOUR_API_TOKEN",
+    "Content-Type": "application/x-www-form-urlencoded"
+  },
+  body: new URLSearchParams({
+    key: "department",
+    value: "engineering"
+  })
+})
+  .then(response => response.json())
+  .then(data => console.log(data));
+```
+</RequestExample>
+
+<ResponseExample>
+```json 201
+{
+  "key": "department",
+  "value": "engineering"
+}
+```
+
+```json 400
+{
+  "message": "Bad request",
+  "status": false
+}
+```
+
+```json 403
+{
+  "message": "Unauthorized request",
+  "status": false
+}
+```
+
+```json 422
+{
+  "message": "Invalid parameters",
+  "status": false
+}
+```
+</ResponseExample>

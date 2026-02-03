@@ -1,0 +1,44 @@
+---
+title: 'Create Instance Tag'
+api: 'POST /v2/instance/{instance_id}/tag'
+description: 'Create a tag for an instance'
+---
+
+Create a new tag for a specific instance. Tags are useful for organizing and categorizing your instances.
+
+## Path Parameters
+
+<ParamField path="instance_id" type="string" required>
+  The unique identifier of the instance to add a tag to.
+</ParamField>
+
+## Request Body
+
+<ParamField body="tag" type="string" required>
+  The tag to add to the instance.
+</ParamField>
+
+## Response
+
+<ResponseField name="tags" type="array">
+  An array of all tags currently assigned to the instance, including the newly added tag.
+</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl -X POST "https://api.dallas-idc.com/v2/instance/{instance_id}/tag" \
+  -H "Authorization: Bearer YOUR_API_TOKEN" \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "tag=production"
+```
+</RequestExample>
+
+<ResponseExample>
+```json 201
+[
+  "production",
+  "webserver",
+  "us-east"
+]
+```
+</ResponseExample>

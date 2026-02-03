@@ -1,0 +1,68 @@
+---
+title: "Get Instance Tags"
+api: "GET /v2/instance/{instance_id}/tag"
+description: "Retrieve all tags associated with an instance"
+---
+
+## Path Parameters
+
+<ParamField path="instance_id" type="string" required>
+  The unique identifier of the instance
+</ParamField>
+
+## Response
+
+<ResponseField name="tags" type="array">
+  An array of tag strings associated with the instance
+</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl -X GET "https://api.dallas-idc.com/v2/instance/{instance_id}/tag" \
+  -H "Authorization: Bearer YOUR_API_TOKEN"
+```
+
+```python Python
+import requests
+
+instance_id = "your-instance-id"
+url = f"https://api.dallas-idc.com/v2/instance/{instance_id}/tag"
+
+headers = {
+    "Authorization": "Bearer YOUR_API_TOKEN"
+}
+
+response = requests.get(url, headers=headers)
+print(response.json())
+```
+
+```javascript JavaScript
+const instanceId = "your-instance-id";
+
+fetch(`https://api.dallas-idc.com/v2/instance/${instanceId}/tag`, {
+  method: "GET",
+  headers: {
+    "Authorization": "Bearer YOUR_API_TOKEN"
+  }
+})
+  .then(response => response.json())
+  .then(data => console.log(data));
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200
+[
+  "production",
+  "webserver",
+  "frontend"
+]
+```
+
+```json 403
+{
+  "message": "Unauthorized request",
+  "status": false
+}
+```
+</ResponseExample>

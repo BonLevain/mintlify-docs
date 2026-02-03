@@ -1,0 +1,66 @@
+---
+title: "Get Image"
+api: "GET /v2/image/{image_name}"
+description: "Retrieve details for a specific operating system image by name"
+---
+
+## Path Parameters
+
+<ParamField path="image_name" type="string" required>
+  The name of the image to retrieve (e.g., `ubuntu_2204_lts_64`)
+</ParamField>
+
+## Response
+
+<ResponseField name="name" type="string">
+  The unique identifier name for the image
+</ResponseField>
+
+<ResponseField name="displayname" type="string">
+  The human-readable display name for the image
+</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl -X GET "https://api.dallas-idc.com/v2/image/ubuntu_2204_lts_64" \
+  -H "Authorization: Bearer YOUR_API_TOKEN"
+```
+
+```python Python
+import requests
+
+response = requests.get(
+    "https://api.dallas-idc.com/v2/image/ubuntu_2204_lts_64",
+    headers={"Authorization": "Bearer YOUR_API_TOKEN"}
+)
+print(response.json())
+```
+
+```javascript JavaScript
+const response = await fetch(
+  "https://api.dallas-idc.com/v2/image/ubuntu_2204_lts_64",
+  {
+    headers: {
+      "Authorization": "Bearer YOUR_API_TOKEN"
+    }
+  }
+);
+const data = await response.json();
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200
+{
+  "name": "ubuntu_2204_lts_64",
+  "displayname": "Ubuntu 22.04 LTS (64-bit)"
+}
+```
+
+```json 404
+{
+  "message": "Image not found",
+  "status": false
+}
+```
+</ResponseExample>

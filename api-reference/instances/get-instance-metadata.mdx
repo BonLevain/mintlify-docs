@@ -1,0 +1,85 @@
+---
+title: "Get Instance Metadata"
+api: "GET /v2/instance/{instance_id}/metadata"
+description: "Retrieve all metadata key-value pairs associated with an instance"
+---
+
+## Path Parameters
+
+<ParamField path="instance_id" type="string" required>
+  The unique identifier of the instance
+</ParamField>
+
+## Response
+
+<ResponseField name="metadata" type="array">
+  An array of metadata objects
+  <Expandable title="Metadata object">
+    <ResponseField name="key" type="string">
+      The metadata key
+    </ResponseField>
+    <ResponseField name="value" type="string">
+      The metadata value
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl -X GET "https://api.dallas-idc.com/v2/instance/{instance_id}/metadata" \
+  -H "Authorization: Bearer YOUR_API_TOKEN"
+```
+
+```python Python
+import requests
+
+instance_id = "your-instance-id"
+url = f"https://api.dallas-idc.com/v2/instance/{instance_id}/metadata"
+
+headers = {
+    "Authorization": "Bearer YOUR_API_TOKEN"
+}
+
+response = requests.get(url, headers=headers)
+print(response.json())
+```
+
+```javascript JavaScript
+const instanceId = "your-instance-id";
+
+fetch(`https://api.dallas-idc.com/v2/instance/${instanceId}/metadata`, {
+  method: "GET",
+  headers: {
+    "Authorization": "Bearer YOUR_API_TOKEN"
+  }
+})
+  .then(response => response.json())
+  .then(data => console.log(data));
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200
+[
+  {
+    "key": "environment",
+    "value": "production"
+  },
+  {
+    "key": "department",
+    "value": "engineering"
+  },
+  {
+    "key": "owner",
+    "value": "devops-team"
+  }
+]
+```
+
+```json 403
+{
+  "message": "Unauthorized request",
+  "status": false
+}
+```
+</ResponseExample>

@@ -1,0 +1,133 @@
+---
+title: "Find Instance by Create Job"
+api: "GET /v2/instance/find_by_create_job/{job_id}"
+description: "Retrieve an instance by its create job ID"
+---
+
+When you create an instance using the [Create Instance](/api-reference/instances/create-instance) endpoint, a job is returned. This endpoint allows you to find the resulting instance once the job completes.
+
+## Path Parameters
+
+<ParamField path="job_id" type="string" required>
+  The ID of the create job returned when the instance was provisioned.
+</ParamField>
+
+## Response
+
+<ResponseField name="uuid" type="string">
+  The unique identifier for the instance.
+</ResponseField>
+
+<ResponseField name="short_uuid" type="string">
+  A shortened version of the instance UUID.
+</ResponseField>
+
+<ResponseField name="name" type="string">
+  The display name of the instance.
+</ResponseField>
+
+<ResponseField name="hostname" type="string">
+  The hostname of the instance.
+</ResponseField>
+
+<ResponseField name="server_id" type="string">
+  The server ID for the instance.
+</ResponseField>
+
+<ResponseField name="project_id" type="string">
+  The project ID the instance belongs to.
+</ResponseField>
+
+<ResponseField name="status" type="string">
+  The current status of the instance.
+</ResponseField>
+
+<ResponseField name="management_ip" type="string">
+  The management IP address of the instance.
+</ResponseField>
+
+<ResponseField name="provision_date" type="string">
+  The date when the instance was provisioned.
+</ResponseField>
+
+<ResponseField name="create_job" type="string">
+  The job ID for the create job of this instance.
+</ResponseField>
+
+<ResponseField name="core" type="object">
+  The core/plan configuration of the instance.
+</ResponseField>
+
+<ResponseField name="facility" type="object">
+  The facility where the instance is located.
+</ResponseField>
+
+<ResponseField name="image" type="object">
+  The operating system image installed on the instance.
+</ResponseField>
+
+<ResponseExample>
+```json 200
+{
+  "uuid": "550e8400-e29b-41d4-a716-446655440000",
+  "short_uuid": "550e8400",
+  "name": "web-server-01",
+  "hostname": "web-server-01.example.com",
+  "server_id": "12345",
+  "project_id": "proj-abc123",
+  "status": "active",
+  "management_ip": "192.168.1.100",
+  "provision_date": "2024-01-15T10:30:00Z",
+  "create_job": "job-xyz789",
+  "item_type": "instance",
+  "core": {
+    "id": "bm1.e1230v1.1",
+    "name": "Intel Xeon E3-1230"
+  },
+  "facility": {
+    "facility_name": "dal1",
+    "facility_title": "Dallas 1"
+  },
+  "image": {
+    "name": "ubuntu_22_04",
+    "displayname": "Ubuntu 22.04 LTS"
+  }
+}
+```
+
+```json 404
+{
+  "message": "Instance not found",
+  "status": false
+}
+```
+</ResponseExample>
+
+<RequestExample>
+```bash cURL
+curl -X GET "https://api.dallas-idc.com/v2/instance/find_by_create_job/job-xyz789" \
+  -H "Authorization: Bearer YOUR_API_TOKEN"
+```
+
+```python Python
+import requests
+
+response = requests.get(
+    "https://api.dallas-idc.com/v2/instance/find_by_create_job/job-xyz789",
+    headers={"Authorization": "Bearer YOUR_API_TOKEN"}
+)
+print(response.json())
+```
+
+```javascript JavaScript
+const response = await fetch(
+  "https://api.dallas-idc.com/v2/instance/find_by_create_job/job-xyz789",
+  {
+    headers: {
+      "Authorization": "Bearer YOUR_API_TOKEN"
+    }
+  }
+);
+const data = await response.json();
+```
+</RequestExample>

@@ -1,0 +1,44 @@
+---
+title: "Get Server Tags"
+api: "GET /v2/server/{server}/tags"
+description: "Retrieve all tags associated with a server"
+---
+
+## Path Parameters
+
+<ParamField path="server" type="integer" required>
+  The ID of the server to retrieve tags for.
+</ParamField>
+
+## Query Parameters
+
+<ParamField query="include_deleted" type="boolean" default="false">
+  Include soft deleted tags in the response.
+</ParamField>
+
+## Response
+
+<ResponseField name="tags" type="array">
+  An array of tag name strings associated with the server.
+</ResponseField>
+
+<ResponseExample>
+```json 200
+[
+  "production",
+  "webserver",
+  "us-west"
+]
+```
+</ResponseExample>
+
+## Error Responses
+
+<ResponseExample>
+```json 403
+{
+  "message": "Unauthorized access",
+  "status": false
+}
+```
+</ResponseExample>

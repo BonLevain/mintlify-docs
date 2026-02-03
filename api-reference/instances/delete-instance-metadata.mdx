@@ -1,0 +1,84 @@
+---
+title: "Delete Instance Metadata"
+api: "DELETE /v2/instance/{instance_id}/metadata/{key}"
+description: "Delete a metadata entry from an instance"
+---
+
+## Path Parameters
+
+<ParamField path="instance_id" type="string" required>
+  The unique identifier of the instance
+</ParamField>
+
+<ParamField path="key" type="string" required>
+  The metadata key to delete
+</ParamField>
+
+## Response
+
+<ResponseField name="message" type="string">
+  A message describing the result of the operation
+</ResponseField>
+
+<ResponseField name="status" type="boolean">
+  Indicates whether the operation was successful
+</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl -X DELETE "https://api.dallas-idc.com/v2/instance/{instance_id}/metadata/{key}" \
+  -H "Authorization: Bearer YOUR_API_TOKEN"
+```
+
+```python Python
+import requests
+
+instance_id = "your-instance-id"
+key = "environment"
+url = f"https://api.dallas-idc.com/v2/instance/{instance_id}/metadata/{key}"
+
+headers = {
+    "Authorization": "Bearer YOUR_API_TOKEN"
+}
+
+response = requests.delete(url, headers=headers)
+print(response.json())
+```
+
+```javascript JavaScript
+const instanceId = "your-instance-id";
+const key = "environment";
+
+fetch(`https://api.dallas-idc.com/v2/instance/${instanceId}/metadata/${key}`, {
+  method: "DELETE",
+  headers: {
+    "Authorization": "Bearer YOUR_API_TOKEN"
+  }
+})
+  .then(response => response.json())
+  .then(data => console.log(data));
+```
+</RequestExample>
+
+<ResponseExample>
+```json 202
+{
+  "message": "Metadata deleted",
+  "status": true
+}
+```
+
+```json 400
+{
+  "message": "Bad request",
+  "status": false
+}
+```
+
+```json 403
+{
+  "message": "Unauthorized request",
+  "status": false
+}
+```
+</ResponseExample>

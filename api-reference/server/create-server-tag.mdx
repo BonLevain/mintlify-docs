@@ -1,0 +1,40 @@
+---
+title: "Create Server Tag"
+api: "POST /v2/server/{server}/tags"
+description: "Create a new tag for a server"
+---
+
+## Path Parameters
+
+<ParamField path="server" type="integer" required>
+  ID of the server
+</ParamField>
+
+## Request Body
+
+<ParamField body="name" type="string" required>
+  Tag name (max 255 characters)
+</ParamField>
+
+## Response
+
+<ResponseField name="name" type="string">
+  The name of the created tag
+</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl -X POST "https://api.dallas-idc.com/v2/server/12345/tags" \
+  -H "Authorization: Bearer YOUR_API_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"name": "production"}'
+```
+</RequestExample>
+
+<ResponseExample>
+```json 201
+{
+  "name": "production"
+}
+```
+</ResponseExample>

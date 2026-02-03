@@ -1,0 +1,176 @@
+---
+title: "Create Instance"
+openapi: "POST /v2/instance"
+---
+
+Provision a new bare metal server instance with the specified configuration.
+
+## Query Parameters
+
+<ParamField query="wait" type="boolean">
+  Whether to wait for the provisioning job to complete before returning. If `false` (default), returns immediately with the job ID.
+</ParamField>
+
+## Request Body
+
+<ParamField body="core" type="string" required>
+  The server core type ID specifying the hardware configuration. Use the [List Cores](/api-reference/cores/list-cores) endpoint to get available options.
+
+  Example: `bm1.e1230v1.1`
+</ParamField>
+
+<ParamField body="image" type="string" required>
+  The operating system image to install. Use the [List Images](/api-reference/images/list-images) endpoint to get available options.
+
+  Example: `almalinux-8`, `ubuntu-22.04`
+</ParamField>
+
+<ParamField body="facility" type="string">
+  The data center facility where the instance should be deployed. Use the [List Facilities](/api-reference/facilities/list-facilities) endpoint to get available locations.
+
+  Example: `dal1`, `lax1`
+</ParamField>
+
+<ParamField body="project_id" type="string">
+  The project ID to associate this instance with.
+
+  Example: `proj-abc123`
+</ParamField>
+
+<ParamField body="name" type="string">
+  A friendly display name for the instance (max 100 characters).
+
+  Example: `web-server-01`
+</ParamField>
+
+<ParamField body="hostname" type="string">
+  The hostname for the instance (max 100 characters).
+
+  Example: `web01.example.com`
+</ParamField>
+
+<ParamField body="description" type="string">
+  A description for the instance.
+</ParamField>
+
+<ParamField body="ssh_keys" type="array">
+  List of SSH key names to install on the instance for authentication. Keys must be previously uploaded via the [SSH Keys API](/api-reference/ssh-keys/create-ssh-key).
+
+  Example: `["my-key", "deploy-key"]`
+</ParamField>
+
+<ParamField body="user_data" type="string">
+  Cloud-init user data script to run on first boot. Supports cloud-config YAML or shell scripts.
+</ParamField>
+
+<ParamField body="networks" type="array">
+  Network types to attach to the instance. Valid values:
+  - `public` - Public internet connectivity
+  - `private` - Private network within the facility
+  - `public_ddos` - Public network with DDoS protection
+
+  Example: `["public", "private"]`
+</ParamField>
+
+<ParamField body="quantity" type="integer" default="1">
+  Number of instances to create with the same configuration.
+</ParamField>
+
+<ParamField body="tags" type="array">
+  List of tags to associate with the instance for organization and filtering.
+
+  Example: `["production", "web", "customer-a"]`
+</ParamField>
+
+<ParamField body="admin_password" type="string">
+  Custom administrator/root password for the instance. If not provided, a random password will be generated.
+</ParamField>
+
+<ParamField body="custom_metadata" type="object">
+  Key-value pairs for custom metadata to store with the instance.
+
+  Example: `{"environment": "production", "department": "engineering"}`
+</ParamField>
+
+<ParamField body="os_disk" type="string">
+  The disk device to install the operating system on. Required if `partitions` is not specified.
+
+  Example: `/dev/sda`, `/dev/nvme0n1`
+</ParamField>
+
+<ParamField body="partitions" type="array">
+  Custom disk partitioning configuration. Required if `os_disk` is not specified. Allows advanced disk layouts including RAID configurations.
+</ParamField>
+
+## Response
+
+Returns a [Job](/api-reference/jobs/get-job) object representing the provisioning task. Use the job ID to track the progress of the instance creation.
+
+## Example Request
+
+```bash
+curl -X POST "https://api.dallas-idc.com/v2/instance" \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "core=bm1.e1230v1.1" \
+  -d "image=almalinux-8" \
+  -d "facility=dal1" \
+  -d "name=web-server-01" \
+  -d "hostname=web01.example.com" \
+  -d "ssh_keys[]=my-key" \
+  -d "networks[]=public" \
+  -d "networks[]=private" \
+  -d "os_disk=/dev/nvme0n1"
+```
+
+## Example Response
+
+```json
+{
+  "created_at": "2024-01-15T10:30:00Z",
+  "update_at": "2024-01-15T10:30:00Z",
+  "status": "pending",
+  "name": "instance.create",
+  "job_identifier": "job-550e8400-e29b-41d4-a716-446655440000",
+  "display_name": "Create Instance",
+  "metadata": [
+    {
+      "key": "instance_name",
+      "value": "web-server-01"
+    }
+  ],
+  "statuses": [
+    {
+      "created_at": "2024-01-15T10:30:00Z",
+      "job_type": "instance.create",
+      "status": "pending",
+      "metadata": []
+    }
+  ]
+}
+```
+
+## Provisioning Workflow
+
+1. **Submit Request** - The API validates your request and returns a job ID
+2. **Hardware Allocation** - A physical server is allocated from available inventory
+3. **Network Configuration** - IP addresses are assigned and network interfaces configured
+4. **OS Installation** - The selected operating system image is installed
+5. **Post-Install Configuration** - SSH keys, user data, and other settings are applied
+6. **Ready** - The instance status changes to `Online` and is accessible
+
+## Use Cases
+
+- **Deploy Web Servers** - Provision servers for hosting web applications
+- **Database Clusters** - Create dedicated database servers with private networking
+- **Development Environments** - Spin up temporary instances for testing
+- **Batch Processing** - Create multiple instances for parallel workloads
+- **Infrastructure as Code** - Automate server provisioning in deployment pipelines
+
+## Related Endpoints
+
+- [Get Instance](/api-reference/instances/get-instance) - Get instance details
+- [List Instances](/api-reference/instances/list-instances) - List all instances
+- [Get Job](/api-reference/jobs/get-job) - Track provisioning progress
+- [Delete Instance](/api-reference/instances/delete-instance) - Cancel an instance
+- [Reload Instance](/api-reference/instances/reload-instance) - Reinstall an instance

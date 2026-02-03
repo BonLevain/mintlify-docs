@@ -1,0 +1,121 @@
+---
+title: 'Get Core'
+api: 'GET /core/{core_name}'
+description: 'Retrieve details for a specific server configuration by name'
+---
+
+## Overview
+
+Returns the details of a specific server configuration (core) by its name/ID. Use this endpoint to fetch specifications and pricing for a particular hardware configuration before provisioning.
+
+<RequestExample>
+
+```bash cURL
+curl https://api.dallas-idc.com/v2/core/bm1.e2234.1 \
+  -H "Authorization: Bearer YOUR_API_TOKEN"
+```
+
+```python Python
+import requests
+
+core_name = "bm1.e2234.1"
+response = requests.get(
+    f"https://api.dallas-idc.com/v2/core/{core_name}",
+    headers={"Authorization": "Bearer YOUR_API_TOKEN"}
+)
+print(response.json())
+```
+
+```javascript JavaScript
+const coreName = 'bm1.e2234.1';
+const response = await fetch(`https://api.dallas-idc.com/v2/core/${coreName}`, {
+  headers: {
+    'Authorization': 'Bearer YOUR_API_TOKEN'
+  }
+});
+const data = await response.json();
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json 200 - Success
+{
+  "id": "bm1.e2234.1",
+  "name": "Intel Xeon E-2234",
+  "rate": 0.15,
+  "interval": "hourly",
+  "description": "",
+  "default_disk": "/dev/nvme0n1",
+  "metadata": [
+    {"key": "cpus", "value": "1"},
+    {"key": "cpu_model", "value": "Intel Xeon E-2234"},
+    {"key": "cpu_cores", "value": "4"},
+    {"key": "memory", "value": "32GB"},
+    {"key": "disk_size", "value": "512GB"},
+    {"key": "disk_count", "value": "1"},
+    {"key": "disk_type", "value": "NVMe"},
+    {"key": "nic_speed", "value": "1Gbps"},
+    {"key": "nic_count", "value": "2"}
+  ]
+}
+```
+
+```json 401 - Unauthorized
+{
+  "error": "Unauthorized",
+  "message": "Invalid or expired token"
+}
+```
+
+```json 404 - Not Found
+{
+  "error": "Not Found",
+  "message": "Core not found"
+}
+```
+
+</ResponseExample>
+
+## Path Parameters
+
+<ParamField path="core_name" type="string" required>
+  The unique identifier (ID) of the core to retrieve (e.g., `bm1.e2234.1`, `bm1.epyc7402.1`)
+</ParamField>
+
+## Response Fields
+
+<ResponseField name="id" type="string">
+  The unique identifier for the core configuration, used when creating instances
+</ResponseField>
+
+<ResponseField name="name" type="string">
+  Human-readable name of the server configuration, typically the CPU model
+</ResponseField>
+
+<ResponseField name="rate" type="number">
+  The price per interval (hourly rate in USD)
+</ResponseField>
+
+<ResponseField name="interval" type="string">
+  The billing interval for the rate (currently `hourly` for all cores)
+</ResponseField>
+
+<ResponseField name="description" type="string">
+  Optional description of the server configuration
+</ResponseField>
+
+<ResponseField name="default_disk" type="string">
+  The default disk device path for OS installation (e.g., `/dev/nvme0n1`, `/dev/sda`)
+</ResponseField>
+
+<ResponseField name="metadata" type="array">
+  Array of key-value pairs containing hardware specifications including CPU, memory, storage, and network details
+</ResponseField>
+
+## Use Cases
+
+- **Pre-provisioning Validation**: Verify a core exists and check its specifications before creating an instance
+- **Pricing Lookup**: Get the current hourly rate for a specific server configuration
+- **Hardware Details**: Retrieve detailed specifications for a known core ID

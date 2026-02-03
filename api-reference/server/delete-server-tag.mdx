@@ -1,0 +1,31 @@
+---
+title: "Delete Server Tag"
+api: "DELETE /v2/server/{server}/tags/{tag_name}"
+description: "Remove a tag from a server"
+---
+
+## Path Parameters
+
+<ParamField path="server" type="integer" required>
+  ID of the server
+</ParamField>
+
+<ParamField path="tag_name" type="string" required>
+  Name of the tag to remove
+</ParamField>
+
+## Response
+
+Returns a `204 No Content` response on success.
+
+<RequestExample>
+```bash cURL
+curl -X DELETE "https://api.dallas-idc.com/v2/server/12345/tags/production" \
+  -H "Authorization: Bearer YOUR_API_TOKEN"
+```
+</RequestExample>
+
+<ResponseExample>
+```json 204
+```
+</ResponseExample>

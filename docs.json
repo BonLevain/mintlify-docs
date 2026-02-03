@@ -26,30 +26,118 @@
         "openapi": "api-reference/openapi.json",
         "pages": [
           {
-            "group": "Account",
+            "group": "Client",
             "pages": [
-              "GET /current_user",
-              "GET /project",
-              "GET /project/{project_id}",
-              "GET /sshkey",
-              "POST /sshkey"
+              "api-reference/client/create-client-metadata"
+            ]
+          },
+          {
+            "group": "Events",
+            "pages": [
+              "api-reference/events/get-event",
+              "api-reference/events/list-events"
             ]
           },
           {
             "group": "Infrastructure",
             "pages": [
-              "GET /core",
-              "GET /facility",
-              "GET /facility/{location}/stock",
-              "GET /image"
+              "GET /v2/core",
+              "GET /v2/core/{core_name}",
+              "GET /v2/facility",
+              "GET /v2/facility/{facility_name}",
+              "GET /v2/facility/{facility_name}/stock",
+              "GET /v2/image",
+              "api-reference/images/get-image"
             ]
           },
           {
             "group": "Instances",
             "pages": [
-              "GET /instance",
-              "GET /job/{job_id}",
-              "POST /instance"
+              "GET /v2/instance",
+              "GET /v2/instance/{instance_id}",
+              "POST /v2/instance",
+              "PUT /v2/instance/{instance_id}",
+              "DELETE /v2/instance/{instance_id}",
+              "api-reference/instances/find-instance-by-job"
+            ]
+          },
+          {
+            "group": "Jobs",
+            "pages": [
+              "GET /v2/job/{job_id}",
+              "api-reference/jobs/get-job-history"
+            ]
+          },
+          {
+            "group": "Metadata & Tags",
+            "pages": [
+              "api-reference/instances/get-instance-metadata",
+              "api-reference/instances/create-instance-metadata",
+              "api-reference/instances/update-instance-metadata",
+              "api-reference/instances/delete-instance-metadata",
+              "api-reference/instances/get-instance-tags",
+              "api-reference/instances/create-instance-tag",
+              "api-reference/instances/delete-instance-tag"
+            ]
+          },
+          {
+            "group": "Networking",
+            "pages": [
+              "api-reference/instances/get-instance-subnets",
+              "api-reference/instances/assign-instance-subnet",
+              "api-reference/instances/remove-instance-subnet"
+            ]
+          },
+          {
+            "group": "Power",
+            "pages": [
+              "api-reference/instances/start-instance",
+              "api-reference/instances/stop-instance",
+              "api-reference/instances/restart-instance",
+              "api-reference/instances/get-power-status"
+            ]
+          },
+          {
+            "group": "Projects",
+            "pages": [
+              "GET /v2/project",
+              "GET /v2/project/{project_id}",
+              "api-reference/projects/create-project",
+              "api-reference/projects/delete-project",
+              "api-reference/projects/update-project-status",
+              "api-reference/projects/get-project-quotas",
+              "api-reference/projects/get-project-instances",
+              "api-reference/projects/add-server-to-project",
+              "api-reference/projects/associate-server-with-project",
+              "api-reference/projects/delete-project-server",
+              "api-reference/projects/get-project-subnets",
+              "api-reference/projects/release-project-subnet",
+              "api-reference/projects/get-project-threshold",
+              "api-reference/projects/get-project-billing"
+            ]
+          },
+          {
+            "group": "Server",
+            "pages": [
+              "api-reference/server/create-server-tag",
+              "api-reference/server/delete-server-tag",
+              "api-reference/server/get-server-tags"
+            ]
+          },
+          {
+            "group": "SSH Keys",
+            "pages": [
+              "GET /v2/sshkey",
+              "POST /v2/sshkey",
+              "api-reference/ssh-keys/get-ssh-key",
+              "api-reference/ssh-keys/delete-ssh-key"
+            ]
+          },
+          {
+            "group": "User",
+            "pages": [
+              "GET /v2/current_user",
+              "api-reference/user/can-create-project"
             ]
           }
         ]
@@ -65,7 +153,6 @@
       ]
     }
   },
-  "openapi": "api-reference/openapi.json",
   "logo": {
     "light": "/logo/light.svg",
     "dark": "/logo/dark.svg"

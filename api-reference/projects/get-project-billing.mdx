@@ -1,0 +1,121 @@
+---
+title: "Get Project Billing History"
+api: "GET /v2/project/{project_id}/billing"
+description: "Retrieve the billing history for a project"
+---
+
+## Path Parameters
+
+<ParamField path="project_id" type="string" required>
+  The unique identifier of the project
+</ParamField>
+
+## Response
+
+Returns an array of invoice objects representing the project's billing history.
+
+<ResponseField name="id" type="string">
+  The unique identifier of the invoice
+</ResponseField>
+
+<ResponseField name="timestamp" type="string">
+  The timestamp when the invoice was created
+</ResponseField>
+
+<ResponseField name="type" type="string">
+  The type of invoice (Credit or Debit)
+</ResponseField>
+
+<ResponseField name="status" type="string">
+  The current status of the invoice
+</ResponseField>
+
+<ResponseField name="description" type="string">
+  A description of the invoice
+</ResponseField>
+
+<ResponseField name="amount" type="string">
+  The total amount of the invoice
+</ResponseField>
+
+<ResponseField name="forpackage" type="string">
+  The package associated with the invoice
+</ResponseField>
+
+<ResponseField name="forinvoice" type="string">
+  The invoice associated with this invoice (in the case of a Credit)
+</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl -X GET "https://api.dallas-idc.com/v2/project/{project_id}/billing" \
+  -H "Authorization: Bearer YOUR_API_TOKEN"
+```
+
+```python Python
+import requests
+
+response = requests.get(
+    "https://api.dallas-idc.com/v2/project/{project_id}/billing",
+    headers={"Authorization": "Bearer YOUR_API_TOKEN"}
+)
+print(response.json())
+```
+
+```javascript JavaScript
+const response = await fetch(
+  "https://api.dallas-idc.com/v2/project/{project_id}/billing",
+  {
+    headers: {
+      Authorization: "Bearer YOUR_API_TOKEN",
+    },
+  }
+);
+const data = await response.json();
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200
+[
+  {
+    "id": "inv_abc123",
+    "timestamp": "2024-01-15T12:00:00Z",
+    "type": "Debit",
+    "status": "paid",
+    "description": "Monthly server usage",
+    "amount": "150.00",
+    "forpackage": "pkg_xyz789",
+    "forinvoice": null
+  },
+  {
+    "id": "inv_def456",
+    "timestamp": "2024-01-10T08:30:00Z",
+    "type": "Credit",
+    "status": "applied",
+    "description": "Promotional credit",
+    "amount": "25.00",
+    "forpackage": null,
+    "forinvoice": "inv_abc123"
+  }
+]
+```
+
+```json 401
+{
+  "message": "Unauthenticated"
+}
+```
+
+```json 403
+{
+  "message": "Forbidden"
+}
+```
+
+```json 404
+{
+  "message": "Project not found"
+}
+```
+</ResponseExample>

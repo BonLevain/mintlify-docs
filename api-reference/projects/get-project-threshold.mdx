@@ -1,0 +1,102 @@
+---
+title: "Get Project Billing Threshold"
+api: "GET /v2/project/{project_id}/threshold"
+description: "Retrieve the billing threshold configuration for a project"
+---
+
+## Path Parameters
+
+<ParamField path="project_id" type="string" required>
+  The unique identifier of the project
+</ParamField>
+
+## Response
+
+<ResponseField name="threshold_dollars" type="string">
+  The dollar amount threshold that triggers billing
+</ResponseField>
+
+<ResponseField name="threshold_days" type="string">
+  The number of days threshold that triggers billing
+</ResponseField>
+
+<ResponseField name="estimate_days" type="string">
+  The estimated number of days before the next billing event
+</ResponseField>
+
+<ResponseField name="avg_usage" type="string">
+  The average daily usage amount
+</ResponseField>
+
+<ResponseField name="usage_days" type="string">
+  The number of days since the last billing event
+</ResponseField>
+
+<ResponseField name="usage_dollars" type="string">
+  The total dollar amount accumulated since the last billing event
+</ResponseField>
+
+<ResponseField name="last_billed" type="string">
+  The timestamp of the last billing event
+</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl -X GET "https://api.dallas-idc.com/v2/project/{project_id}/threshold" \
+  -H "Authorization: Bearer YOUR_API_TOKEN"
+```
+
+```python Python
+import requests
+
+response = requests.get(
+    "https://api.dallas-idc.com/v2/project/{project_id}/threshold",
+    headers={"Authorization": "Bearer YOUR_API_TOKEN"}
+)
+print(response.json())
+```
+
+```javascript JavaScript
+const response = await fetch(
+  "https://api.dallas-idc.com/v2/project/{project_id}/threshold",
+  {
+    headers: {
+      Authorization: "Bearer YOUR_API_TOKEN",
+    },
+  }
+);
+const data = await response.json();
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200
+{
+  "threshold_dollars": "500.00",
+  "threshold_days": "30",
+  "estimate_days": "15",
+  "avg_usage": "33.33",
+  "usage_days": "15",
+  "usage_dollars": "250.00",
+  "last_billed": "2024-01-01T00:00:00Z"
+}
+```
+
+```json 401
+{
+  "message": "Unauthenticated"
+}
+```
+
+```json 403
+{
+  "message": "Forbidden"
+}
+```
+
+```json 404
+{
+  "message": "Project not found"
+}
+```
+</ResponseExample>

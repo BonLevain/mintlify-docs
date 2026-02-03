@@ -1,0 +1,138 @@
+---
+title: "Reload Instance"
+openapi: "PUT /v2/instance/{instance_id}"
+---
+
+Reinstall the operating system on an existing instance. This operation will wipe the server and deploy a fresh installation with the specified configuration.
+
+<Warning>
+This operation will **destroy all data** on the instance. Ensure you have backups of any important data before proceeding.
+</Warning>
+
+## Path Parameters
+
+<ParamField path="instance_id" type="string" required>
+  The unique identifier (UUID) of the instance to reload.
+</ParamField>
+
+## Query Parameters
+
+<ParamField query="wait" type="boolean">
+  Whether to wait for the reload job to complete before returning. If `false` (default), returns immediately with the job ID.
+</ParamField>
+
+## Request Body
+
+<ParamField body="image" type="string">
+  The operating system image to install. Use the [List Images](/api-reference/images/list-images) endpoint to get available options. If not specified, uses the same image from the previous installation.
+
+  Example: `almalinux-8`, `ubuntu-22.04`
+</ParamField>
+
+<ParamField body="ssh_keys" type="array">
+  List of SSH key names to install on the instance for authentication. Keys must be previously uploaded via the [SSH Keys API](/api-reference/ssh-keys/create-ssh-key).
+
+  Example: `["my-key", "deploy-key"]`
+</ParamField>
+
+<ParamField body="user_data" type="string">
+  Cloud-init user data script to run on first boot. Supports cloud-config YAML or shell scripts.
+</ParamField>
+
+<ParamField body="admin_password" type="string">
+  Custom administrator/root password for the instance. If not provided, a random password will be generated.
+</ParamField>
+
+<ParamField body="project_id" type="string">
+  The project ID to associate this instance with.
+</ParamField>
+
+<ParamField body="os_disk" type="string">
+  The disk device to install the operating system on. Required if `partitions` is not specified.
+
+  Example: `/dev/sda`, `/dev/nvme0n1`
+</ParamField>
+
+<ParamField body="partitions" type="array">
+  Custom disk partitioning configuration. Required if `os_disk` is not specified. Allows advanced disk layouts including RAID configurations.
+</ParamField>
+
+<ParamField body="modified" type="array">
+  List of fields that have been intentionally modified to be empty. Valid values:
+  - `ssh_keys` - Clear SSH keys
+  - `networks` - Reset network configuration
+  - `user_data` - Clear user data
+  - `admin_password` - Generate new random password
+
+  Use this when you want to explicitly clear a field that had a value in the previous installation.
+</ParamField>
+
+## Response
+
+Returns a [Job](/api-reference/jobs/get-job) object representing the reload task. Use the job ID to track the progress of the reinstallation.
+
+## Example Request
+
+```bash
+curl -X PUT "https://api.dallas-idc.com/v2/instance/{instance_id}" \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "image=ubuntu-22.04" \
+  -d "ssh_keys[]=my-key" \
+  -d "os_disk=/dev/nvme0n1"
+```
+
+## Example Response
+
+```json
+{
+  "created_at": "2024-01-15T14:30:00Z",
+  "update_at": "2024-01-15T14:30:00Z",
+  "status": "pending",
+  "name": "instance.reload",
+  "job_identifier": "job-550e8400-e29b-41d4-a716-446655440001",
+  "display_name": "Reload Instance",
+  "metadata": [
+    {
+      "key": "instance_id",
+      "value": "550e8400-e29b-41d4-a716-446655440000"
+    },
+    {
+      "key": "image",
+      "value": "ubuntu-22.04"
+    }
+  ],
+  "statuses": [
+    {
+      "created_at": "2024-01-15T14:30:00Z",
+      "job_type": "instance.reload",
+      "status": "pending",
+      "metadata": []
+    }
+  ]
+}
+```
+
+## Reload Workflow
+
+1. **Submit Request** - The API validates your request and returns a job ID
+2. **Server Preparation** - The server is prepared for reinstallation
+3. **Disk Formatting** - Disks are wiped and partitioned according to configuration
+4. **OS Installation** - The selected operating system image is installed
+5. **Post-Install Configuration** - SSH keys, user data, and other settings are applied
+6. **Ready** - The instance status changes to `Online` and is accessible
+
+## Use Cases
+
+- **OS Upgrade** - Switch to a newer operating system version
+- **Fresh Start** - Reset a server to a clean state after testing
+- **Configuration Changes** - Apply new partitioning or disk layouts
+- **Security Remediation** - Rebuild a compromised server from scratch
+- **Environment Reset** - Quickly reset development or staging servers
+
+## Related Endpoints
+
+- [Get Instance](/api-reference/instances/get-instance) - Get instance details
+- [Create Instance](/api-reference/instances/create-instance) - Provision a new instance
+- [Get Job](/api-reference/jobs/get-job) - Track reload progress
+- [Delete Instance](/api-reference/instances/delete-instance) - Cancel an instance

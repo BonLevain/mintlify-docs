@@ -1,0 +1,69 @@
+---
+title: "Get Project Subnets"
+openapi: "GET /v2/project/{project_id}/subnet"
+---
+
+Retrieve the IP subnets allocated to a specific project.
+
+## Path Parameters
+
+<ParamField path="project_id" type="string" required>
+  The unique identifier (UUID) of the project to query.
+</ParamField>
+
+## Response
+
+Returns an array of [IpBlock](/api-reference/schemas/ip-block) objects containing:
+
+- Network block with CIDR notation
+- Network address and netmask
+- Device assignment information
+- Network type (public or private)
+- Assignment type (direct or floating)
+
+## Example Request
+
+```bash
+curl -X GET "https://api.dallas-idc.com/v2/project/{project_id}/subnet" \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
+```
+
+## Example Response
+
+```json
+[
+  {
+    "block": "192.168.1.0/24",
+    "network": "192.168.1.0",
+    "cidr": 24,
+    "netmask": "255.255.255.0",
+    "device": "server-001",
+    "created_at": "2024-01-15T10:30:00Z",
+    "network_type": "public",
+    "assignment_type": "direct"
+  },
+  {
+    "block": "10.0.0.0/24",
+    "network": "10.0.0.0",
+    "cidr": 24,
+    "netmask": "255.255.255.0",
+    "device": "server-002",
+    "created_at": "2024-01-15T10:30:00Z",
+    "network_type": "private",
+    "assignment_type": "direct"
+  }
+]
+```
+
+## Use Cases
+
+- **Network Inventory**: List all IP subnets allocated to a project
+- **Capacity Planning**: Review IP allocation across the project
+- **Network Management**: Understand which subnets are available for assignment to instances
+- **Compliance Reporting**: Document IP address usage within a project
+
+## Related Endpoints
+
+- [Get Project](/api-reference/projects/get-project) - Get full project details
+- [Get Project Instances](/api-reference/projects/get-project-instances) - List instances in the project
+- [Release Project Subnet](/api-reference/projects/release-project-subnet) - Release an IP subnet from the project

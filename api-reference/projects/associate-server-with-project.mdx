@@ -1,0 +1,128 @@
+---
+title: 'Associate Server with Project'
+api: 'POST /project/{project_id}/server/{server_id}'
+description: 'Associate an existing server with a project'
+---
+
+## Overview
+
+Associates an existing bare metal server with a specified project. This endpoint is used when you have a server that was provisioned outside of the project system (such as a legacy server) and want to bring it under project management for better organization and billing.
+
+Unlike the [Add Server to Project](/api-reference/projects/add-server-to-project) endpoint which provisions a new server, this endpoint links an existing server to a project without any provisioning.
+
+## Path Parameters
+
+<ParamField path="project_id" type="string" required>
+  The unique identifier of the project to associate the server with (e.g., `PROJ-9bf66e73`)
+</ParamField>
+
+<ParamField path="server_id" type="string" required>
+  The unique identifier of the server to associate with the project
+</ParamField>
+
+## Request Body
+
+<ParamField body="server_id" type="string" required>
+  The server ID to associate with the project. This should match the path parameter.
+</ParamField>
+
+<RequestExample>
+
+```bash cURL
+curl -X POST "https://api.dallas-idc.com/v2/project/PROJ-9bf66e73/server/srv-12345678" \
+  -H "Authorization: Bearer YOUR_API_TOKEN" \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "server_id=srv-12345678"
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    "https://api.dallas-idc.com/v2/project/PROJ-9bf66e73/server/srv-12345678",
+    headers={"Authorization": "Bearer YOUR_API_TOKEN"},
+    data={"server_id": "srv-12345678"}
+)
+print(response.json())
+```
+
+```javascript JavaScript
+const response = await fetch('https://api.dallas-idc.com/v2/project/PROJ-9bf66e73/server/srv-12345678', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Bearer YOUR_API_TOKEN',
+    'Content-Type': 'application/x-www-form-urlencoded'
+  },
+  body: new URLSearchParams({
+    server_id: 'srv-12345678'
+  })
+});
+const result = await response.json();
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json 201 - Created
+{
+  "message": "Server successfully associated with project",
+  "status": true
+}
+```
+
+```json 400 - Bad Request
+{
+  "message": "Server not eligible to be assigned to a project",
+  "status": false
+}
+```
+
+```json 401 - Unauthorized
+{
+  "error": "Unauthorized",
+  "message": "Invalid or expired token"
+}
+```
+
+```json 403 - Forbidden
+{
+  "error": "Forbidden",
+  "message": "You do not have permission to modify this project"
+}
+```
+
+```json 422 - Validation Error
+{
+  "message": "Invalid server_id provided",
+  "status": false
+}
+```
+
+</ResponseExample>
+
+## Response Fields
+
+<ResponseField name="message" type="string">
+  A human-readable message describing the result of the operation
+</ResponseField>
+
+<ResponseField name="status" type="boolean">
+  Indicates whether the operation was successful (`true`) or failed (`false`)
+</ResponseField>
+
+## Server Eligibility
+
+Not all servers can be associated with a project. A server must meet the following criteria:
+
+- The server must belong to your account
+- The server must not already be associated with another project
+- The server must be in an active state
+
+If a server is not eligible, you will receive a `400 Bad Request` response with details about why the association failed.
+
+## Notes
+
+- Once a server is associated with a project, its billing will be consolidated under that project
+- To remove a server from a project, use the [Delete Project Server](/api-reference/projects/delete-project-server) endpoint
+- You can view all servers in a project using the [Get Project Instances](/api-reference/projects/get-project-instances) endpoint

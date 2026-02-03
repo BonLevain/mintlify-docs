@@ -1,0 +1,250 @@
+---
+title: 'Add Server to Project'
+api: 'POST /project/{project_id}/server'
+description: 'Create a new bare metal server within a specific project'
+---
+
+## Overview
+
+Creates and provisions a new bare metal server directly within the specified project. This endpoint is an alternative to creating an instance via `POST /instance` and allows you to provision servers directly into an organizational container.
+
+The provisioning process is asynchronous. Upon successful request, you receive a Job object that you can monitor to track the server creation progress.
+
+## Path Parameters
+
+<ParamField path="project_id" type="string" required>
+  The unique identifier of the project to add the server to (e.g., `PROJ-9bf66e73`)
+</ParamField>
+
+## Query Parameters
+
+<ParamField query="wait" type="boolean" default="false">
+  When set to `true`, the API will wait for the provisioning job to complete before returning. When `false` (default), the API returns immediately with a Job object you can poll.
+</ParamField>
+
+## Request Body
+
+<ParamField body="core" type="string" required>
+  The server configuration/plan to use (e.g., `bm1.e1230v1.1`). Use the [List Cores](/api-reference/cores/list-cores) endpoint to see available options.
+</ParamField>
+
+<ParamField body="image" type="string" required>
+  The operating system image to install (e.g., `ubuntu_22_04`). Use the [List Images](/api-reference/images/list-images) endpoint to see available options.
+</ParamField>
+
+<ParamField body="facility" type="string">
+  The data center facility for the server (e.g., `dal`). Use the [List Facilities](/api-reference/facilities/list-facilities) endpoint to see available options.
+</ParamField>
+
+<ParamField body="name" type="string">
+  A friendly display name for the server (max 100 characters)
+</ParamField>
+
+<ParamField body="hostname" type="string">
+  The hostname to assign to the server (max 100 characters)
+</ParamField>
+
+<ParamField body="description" type="string">
+  A description for the server
+</ParamField>
+
+<ParamField body="ssh_keys" type="array">
+  Array of SSH key names to install on the server. Keys must be previously uploaded via the [SSH Keys API](/api-reference/ssh-keys/list-ssh-keys).
+</ParamField>
+
+<ParamField body="user_data" type="string">
+  Cloud-init user data script to run on first boot
+</ParamField>
+
+<ParamField body="networks" type="array">
+  Network types to enable. Valid values: `public`, `private`, `public_ddos`
+</ParamField>
+
+<ParamField body="admin_password" type="string">
+  Custom root/administrator password. If not provided, a random password will be generated.
+</ParamField>
+
+<ParamField body="tags" type="array">
+  List of tags to associate with the server (e.g., `["production", "webserver"]`)
+</ParamField>
+
+<ParamField body="custom_metadata" type="object">
+  Key-value pairs of custom metadata to store with the server (e.g., `{"environment": "production"}`)
+</ParamField>
+
+<ParamField body="os_disk" type="string">
+  Installation destination device (e.g., `/dev/sda`). Required if not using `partitions`.
+</ParamField>
+
+<ParamField body="partitions" type="array">
+  Custom disk partitioning configuration. Required if not using `os_disk`. See the [Create Instance](/api-reference/instances/create-instance) documentation for partition schema details.
+</ParamField>
+
+<RequestExample>
+
+```bash cURL
+curl -X POST "https://api.dallas-idc.com/v2/project/PROJ-9bf66e73/server" \
+  -H "Authorization: Bearer YOUR_API_TOKEN" \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "core=bm1.e1230v1.1" \
+  -d "image=ubuntu_22_04" \
+  -d "facility=dal" \
+  -d "name=Web Server 01" \
+  -d "hostname=web01.example.com" \
+  -d "os_disk=/dev/sda" \
+  -d "ssh_keys[]=my-ssh-key"
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    "https://api.dallas-idc.com/v2/project/PROJ-9bf66e73/server",
+    headers={"Authorization": "Bearer YOUR_API_TOKEN"},
+    data={
+        "core": "bm1.e1230v1.1",
+        "image": "ubuntu_22_04",
+        "facility": "dal",
+        "name": "Web Server 01",
+        "hostname": "web01.example.com",
+        "os_disk": "/dev/sda",
+        "ssh_keys[]": "my-ssh-key"
+    }
+)
+print(response.json())
+```
+
+```javascript JavaScript
+const response = await fetch('https://api.dallas-idc.com/v2/project/PROJ-9bf66e73/server', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Bearer YOUR_API_TOKEN',
+    'Content-Type': 'application/x-www-form-urlencoded'
+  },
+  body: new URLSearchParams({
+    core: 'bm1.e1230v1.1',
+    image: 'ubuntu_22_04',
+    facility: 'dal',
+    name: 'Web Server 01',
+    hostname: 'web01.example.com',
+    os_disk: '/dev/sda',
+    'ssh_keys[]': 'my-ssh-key'
+  })
+});
+const job = await response.json();
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json 201 - Created
+{
+  "created_at": "2025-12-01T14:30:22Z",
+  "updated_at": "2025-12-01T14:30:22Z",
+  "status": "Pending",
+  "name": "ServerCreate",
+  "job_identifier": "job-a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+  "display_name": "Create Server",
+  "metadata": [
+    {
+      "key": "server_name",
+      "value": "Web Server 01"
+    },
+    {
+      "key": "project_id",
+      "value": "PROJ-9bf66e73"
+    }
+  ],
+  "statuses": []
+}
+```
+
+```json 400 - Bad Request
+{
+  "message": "Unable to create server",
+  "status": false
+}
+```
+
+```json 401 - Unauthorized
+{
+  "error": "Unauthorized",
+  "message": "Invalid or expired token"
+}
+```
+
+```json 403 - Forbidden
+{
+  "error": "Forbidden",
+  "message": "You do not have permission to create servers in this project"
+}
+```
+
+```json 422 - Validation Error
+{
+  "errors": [
+    {
+      "property": "core",
+      "pointer": "/core",
+      "message": "The core field is required",
+      "constraint": "required",
+      "context": 1
+    }
+  ]
+}
+```
+
+</ResponseExample>
+
+## Response Fields
+
+<ResponseField name="created_at" type="string">
+  Timestamp when the job was created (ISO 8601 format)
+</ResponseField>
+
+<ResponseField name="updated_at" type="string">
+  Timestamp when the job was last updated (ISO 8601 format)
+</ResponseField>
+
+<ResponseField name="status" type="string">
+  Current status of the provisioning job (e.g., `Pending`, `Running`, `Complete`, `Failed`)
+</ResponseField>
+
+<ResponseField name="name" type="string">
+  Internal job type name
+</ResponseField>
+
+<ResponseField name="job_identifier" type="string">
+  Unique identifier for tracking the job. Use this with the [Get Job](/api-reference/jobs/get-job) endpoint to monitor progress.
+</ResponseField>
+
+<ResponseField name="display_name" type="string">
+  Human-readable name for the job
+</ResponseField>
+
+<ResponseField name="metadata" type="array">
+  Array of key-value pairs containing job metadata
+</ResponseField>
+
+<ResponseField name="statuses" type="array">
+  Array of status updates as the job progresses
+</ResponseField>
+
+## Monitoring Provisioning
+
+After creating a server, use the returned `job_identifier` to monitor the provisioning progress:
+
+```bash
+curl -X GET "https://api.dallas-idc.com/v2/job/job-a1b2c3d4-e5f6-7890-abcd-ef1234567890" \
+  -H "Authorization: Bearer YOUR_API_TOKEN"
+```
+
+Once the job completes, use the [Find Instance by Job](/api-reference/instances/find-instance-by-job) endpoint to retrieve the newly created instance.
+
+## Notes
+
+- Server provisioning typically takes 5-15 minutes depending on configuration
+- The project must have sufficient quota available for new instances
+- Use the [Get Project Quotas](/api-reference/projects/get-project-quotas) endpoint to check available capacity
+- SSH keys must be uploaded before they can be used during provisioning

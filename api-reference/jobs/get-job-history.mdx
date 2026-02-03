@@ -1,0 +1,146 @@
+---
+title: "Get Job History"
+api: "GET /v2/job/history"
+description: "Get job history for a specific object"
+---
+
+Retrieve the job history for a given object. This is useful for tracking all jobs that have been executed against a specific resource like an instance or project.
+
+## Query Parameters
+
+<ParamField query="object_id" type="string" required>
+  The ID of the object to retrieve job history for.
+</ParamField>
+
+<ParamField query="object_type" type="string" required>
+  The type of the object (e.g., "Instance", "Project").
+</ParamField>
+
+<ParamField query="start" type="string">
+  The start time to look back. Defaults to 1 month if not specified.
+</ParamField>
+
+## Response
+
+<ResponseField name="jobs" type="array">
+  An array of job objects.
+
+  <Expandable title="Job object properties">
+    <ResponseField name="created_at" type="string">
+      The timestamp when the job was created.
+    </ResponseField>
+
+    <ResponseField name="update_at" type="string">
+      The timestamp when the job was last updated.
+    </ResponseField>
+
+    <ResponseField name="status" type="string">
+      The current status of the job.
+    </ResponseField>
+
+    <ResponseField name="name" type="string">
+      The name of the job.
+    </ResponseField>
+
+    <ResponseField name="job_identifier" type="string">
+      The unique identifier for the job.
+    </ResponseField>
+
+    <ResponseField name="display_name" type="string">
+      The human-readable display name for the job.
+    </ResponseField>
+
+    <ResponseField name="metadata" type="array">
+      Key-value metadata associated with the job.
+    </ResponseField>
+
+    <ResponseField name="statuses" type="array">
+      An array of status updates for the job.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl -X GET "https://api.dallas-idc.com/v2/job/history?object_id=abc123&object_type=Instance" \
+  -H "Authorization: Bearer YOUR_API_TOKEN"
+```
+
+```python Python
+import requests
+
+response = requests.get(
+    "https://api.dallas-idc.com/v2/job/history",
+    params={
+        "object_id": "abc123",
+        "object_type": "Instance"
+    },
+    headers={"Authorization": "Bearer YOUR_API_TOKEN"}
+)
+
+jobs = response.json()
+```
+
+```javascript JavaScript
+const response = await fetch(
+  "https://api.dallas-idc.com/v2/job/history?object_id=abc123&object_type=Instance",
+  {
+    headers: {
+      "Authorization": "Bearer YOUR_API_TOKEN"
+    }
+  }
+);
+
+const jobs = await response.json();
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200
+[
+  {
+    "created_at": "2024-01-15T10:30:00Z",
+    "update_at": "2024-01-15T10:35:00Z",
+    "status": "completed",
+    "name": "server_reload",
+    "job_identifier": "job-abc123",
+    "display_name": "Server Reload",
+    "metadata": [
+      {
+        "key": "image",
+        "value": "ubuntu-22.04"
+      }
+    ],
+    "statuses": [
+      {
+        "created_at": "2024-01-15T10:30:00Z",
+        "update_time": "2024-01-15T10:30:00Z",
+        "job_type": "reload",
+        "status": "started",
+        "metadata": []
+      },
+      {
+        "created_at": "2024-01-15T10:35:00Z",
+        "update_time": "2024-01-15T10:35:00Z",
+        "job_type": "reload",
+        "status": "completed",
+        "metadata": []
+      }
+    ]
+  }
+]
+```
+
+```json 401
+{
+  "message": "Unauthenticated"
+}
+```
+
+```json 404
+{
+  "message": "Jobs not found",
+  "status": false
+}
+```
+</ResponseExample>

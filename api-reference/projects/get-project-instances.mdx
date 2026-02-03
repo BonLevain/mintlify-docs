@@ -1,0 +1,140 @@
+---
+title: "Get Project Instances"
+api: "GET /v2/project/{project_id}/server"
+description: "Get a project's instances"
+---
+
+Retrieve all instances (servers) associated with a specific project. This endpoint returns detailed information about each instance provisioned within the project.
+
+<ParamField path="project_id" type="string" required>
+  ID of the project to return instances for
+</ParamField>
+
+## Response
+
+Returns an array of instance objects containing the following fields:
+
+<ResponseField name="uuid" type="string">
+  The unique identifier for the instance
+</ResponseField>
+
+<ResponseField name="short_uuid" type="string">
+  A shortened version of the UUID for convenience
+</ResponseField>
+
+<ResponseField name="name" type="string">
+  The display name for the instance
+</ResponseField>
+
+<ResponseField name="hostname" type="string">
+  The hostname assigned to the instance
+</ResponseField>
+
+<ResponseField name="server_id" type="string">
+  The server ID for the instance
+</ResponseField>
+
+<ResponseField name="project_id" type="string">
+  The project ID the instance belongs to
+</ResponseField>
+
+<ResponseField name="status" type="string">
+  The current status of the instance
+</ResponseField>
+
+<ResponseField name="management_ip" type="string">
+  The management IP address of the instance
+</ResponseField>
+
+<ResponseField name="provision_date" type="string">
+  The date the instance was provisioned
+</ResponseField>
+
+<ResponseField name="core" type="object">
+  The core (hardware configuration) details for this instance
+</ResponseField>
+
+<ResponseField name="facility" type="object">
+  The facility (datacenter) where this instance is located
+</ResponseField>
+
+<ResponseField name="image" type="object">
+  The operating system image installed on this instance
+</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl -X GET "https://api.dallas-idc.com/v2/project/{project_id}/server" \
+  -H "Authorization: Bearer YOUR_API_TOKEN"
+```
+
+```python Python
+import requests
+
+response = requests.get(
+    "https://api.dallas-idc.com/v2/project/{project_id}/server",
+    headers={"Authorization": "Bearer YOUR_API_TOKEN"}
+)
+print(response.json())
+```
+
+```javascript JavaScript
+const response = await fetch(
+  "https://api.dallas-idc.com/v2/project/{project_id}/server",
+  {
+    headers: {
+      "Authorization": "Bearer YOUR_API_TOKEN"
+    }
+  }
+);
+const data = await response.json();
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200
+[
+  {
+    "uuid": "550e8400-e29b-41d4-a716-446655440000",
+    "short_uuid": "550e8400",
+    "name": "web-server-01",
+    "hostname": "web01.example.com",
+    "server_id": "12345",
+    "project_id": "proj-abc123",
+    "status": "active",
+    "management_ip": "192.168.1.100",
+    "provision_date": "2024-01-15T10:30:00Z",
+    "core": {
+      "id": "bm1.e1230v1.1",
+      "name": "Intel Xeon E3-1230"
+    },
+    "facility": {
+      "facility_name": "dal1",
+      "facility_title": "Dallas 1"
+    },
+    "image": {
+      "name": "ubuntu_22_04",
+      "displayname": "Ubuntu 22.04 LTS"
+    }
+  }
+]
+```
+
+```json 401
+{
+  "message": "Unauthenticated"
+}
+```
+
+```json 403
+{
+  "message": "Unauthorized request"
+}
+```
+
+```json 404
+{
+  "message": "Project not found"
+}
+```
+</ResponseExample>

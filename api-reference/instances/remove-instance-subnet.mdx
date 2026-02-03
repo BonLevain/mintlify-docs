@@ -1,0 +1,56 @@
+---
+title: "Remove IP Subnet"
+openapi: "DELETE /v2/instance/{instance_id}/subnet"
+---
+
+Remove an IP subnet from a specific instance.
+
+## Path Parameters
+
+<ParamField path="instance_id" type="string" required>
+  The unique identifier (UUID) of the instance to remove the subnet from.
+</ParamField>
+
+<ParamField path="subnet" type="string" required>
+  The IP subnet to remove from the instance.
+</ParamField>
+
+## Response
+
+Returns a [Job](/api-reference/schemas/job) object that tracks the subnet removal operation.
+
+## Example Request
+
+```bash
+curl -X DELETE "https://api.dallas-idc.com/v2/instance/{instance_id}/subnet" \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "subnet=192.168.1.0/24"
+```
+
+## Example Response
+
+```json
+{
+  "created_at": "2024-01-15T10:30:00Z",
+  "update_at": "2024-01-15T10:30:00Z",
+  "status": "pending",
+  "name": "deassign_ip_subnet",
+  "job_identifier": "job-abc123",
+  "display_name": "Remove IP Subnet",
+  "metadata": [],
+  "statuses": []
+}
+```
+
+## Use Cases
+
+- **Network Cleanup**: Remove unused IP subnets from instances to free up address space
+- **Decommissioning**: Remove IP allocations before instance deletion
+- **Network Reorganization**: Reallocate IP subnets between instances
+
+## Related Endpoints
+
+- [Get Instance Subnets](/api-reference/instances/get-instance-subnets) - List all IP subnets assigned to an instance
+- [Assign IP Subnet](/api-reference/instances/assign-instance-subnet) - Assign an IP subnet to an instance
+- [Get Job](/api-reference/jobs/get-job) - Check the status of the removal job

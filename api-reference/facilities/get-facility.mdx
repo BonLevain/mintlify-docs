@@ -1,0 +1,81 @@
+---
+title: 'Get Facility'
+api: 'GET /facility/{facility_name}'
+description: 'Retrieve details for a specific datacenter facility'
+---
+
+## Overview
+
+Returns detailed information about a specific datacenter facility by its name code. Use this endpoint to get facility details before provisioning servers in a particular location.
+
+<RequestExample>
+
+```bash cURL
+curl https://api.dallas-idc.com/v2/facility/DFW1 \
+  -H "Authorization: Bearer YOUR_API_TOKEN"
+```
+
+```python Python
+import requests
+
+response = requests.get(
+    "https://api.dallas-idc.com/v2/facility/DFW1",
+    headers={"Authorization": "Bearer YOUR_API_TOKEN"}
+)
+print(response.json())
+```
+
+```javascript JavaScript
+const response = await fetch('https://api.dallas-idc.com/v2/facility/DFW1', {
+  headers: {
+    'Authorization': 'Bearer YOUR_API_TOKEN'
+  }
+});
+const data = await response.json();
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json 200 - Success
+{
+  "facility_name": "DFW1",
+  "facility_title": "Dallas, TX (DFW1)",
+  "facility_description": "Dallas 1"
+}
+```
+
+```json 404 - Not Found
+{
+  "message": "Facility not found",
+  "status": false
+}
+```
+
+</ResponseExample>
+
+## Path Parameters
+
+<ParamField path="facility_name" type="string" required>
+  The unique facility code (e.g., `DFW1`, `LAX1`, `FRA1`). See [List Facilities](/api-reference/facilities/list-facilities) for available codes.
+</ParamField>
+
+## Response Fields
+
+<ResponseField name="facility_name" type="string">
+  The unique facility code used when creating instances or checking stock
+</ResponseField>
+
+<ResponseField name="facility_title" type="string">
+  Human-readable title including city, state/country, and facility code
+</ResponseField>
+
+<ResponseField name="facility_description" type="string">
+  Short description of the facility
+</ResponseField>
+
+## Related Endpoints
+
+- [List Facilities](/api-reference/facilities/list-facilities) - Get all available facilities
+- [Get Facility Stock](/api-reference/facilities/facility-stock) - Check server availability at a facility

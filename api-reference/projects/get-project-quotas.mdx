@@ -1,0 +1,87 @@
+---
+title: "Get Project Quotas"
+api: "GET /v2/project/{project_id}/quotas"
+description: "Get a project's quotas by ID"
+---
+
+Retrieve the resource quotas for a specific project. Quotas define the maximum resources that can be provisioned within a project, including server count and IP allocations.
+
+<ParamField path="project_id" type="string" required>
+  ID of the project to return quotas for
+</ParamField>
+
+## Response
+
+<ResponseField name="max_ips" type="integer">
+  Maximum number of IP addresses allowed for this project
+</ResponseField>
+
+<ResponseField name="max_servers" type="integer">
+  Maximum number of servers allowed for this project
+</ResponseField>
+
+<ResponseField name="used_servers" type="integer">
+  Current number of servers provisioned in this project
+</ResponseField>
+
+<ResponseField name="used_ips" type="integer">
+  Current number of IP addresses allocated to this project
+</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl -X GET "https://api.dallas-idc.com/v2/project/{project_id}/quotas" \
+  -H "Authorization: Bearer YOUR_API_TOKEN"
+```
+
+```python Python
+import requests
+
+response = requests.get(
+    "https://api.dallas-idc.com/v2/project/{project_id}/quotas",
+    headers={"Authorization": "Bearer YOUR_API_TOKEN"}
+)
+print(response.json())
+```
+
+```javascript JavaScript
+const response = await fetch(
+  "https://api.dallas-idc.com/v2/project/{project_id}/quotas",
+  {
+    headers: {
+      "Authorization": "Bearer YOUR_API_TOKEN"
+    }
+  }
+);
+const data = await response.json();
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200
+{
+  "max_ips": 16,
+  "max_servers": 10,
+  "used_servers": 3,
+  "used_ips": 8
+}
+```
+
+```json 401
+{
+  "message": "Unauthenticated"
+}
+```
+
+```json 403
+{
+  "message": "Unauthorized request"
+}
+```
+
+```json 404
+{
+  "message": "Project not found"
+}
+```
+</ResponseExample>
