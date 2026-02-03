@@ -14,19 +14,14 @@
   "navigation": {
     "tabs": [
       {
-        "tab": "Guides",
+        "tab": "API reference",
         "groups": [
           {
             "group": "Getting started",
             "pages": [
               "quickstart"
             ]
-          }
-        ]
-      },
-      {
-        "tab": "API reference",
-        "groups": [
+          },
           {
             "group": "API documentation",
             "pages": [
