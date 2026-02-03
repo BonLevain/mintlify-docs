@@ -1,100 +1,88 @@
 ---
-title: 'Quickstart'
-description: 'Deploy your first bare metal server in minutes'
+title: 'API Overview'
+description: 'Complete reference for the Limestone Networks OnePortal API'
 ---
 
-## Getting Started with Limestone Networks
+## Base URL
 
-This guide will walk you through deploying your first server using the Limestone Networks API.
+All API requests should be made to:
 
-## Prerequisites
-
-Before you begin, you'll need:
-
-1. A Limestone Networks account - [Sign up here](https://one.limestonenetworks.com)
-2. An API token from your account dashboard
-3. An SSH key for server access
-
-## Step 1: Generate an API Token
-
-<Steps>
-  <Step title="Log into OnePortal">
-    Navigate to [one.limestonenetworks.com](https://one.limestonenetworks.com) and sign in
-  </Step>
-  <Step title="Access API Settings">
-    Go to your account settings and find the API tokens section
-  </Step>
-  <Step title="Create a Token">
-    Generate a new token and save it securely - you won't be able to see it again
-  </Step>
-</Steps>
-
-## Step 2: Upload Your SSH Key
-
-Before provisioning a server, upload your SSH public key:
-
-```bash
-curl -X POST https://api.dallas-idc.com/v2/sshkey \
-  -H "Authorization: Bearer YOUR_API_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "name": "my-key",
-    "pubkey": "ssh-ed25519 AAAA... user@hostname"
-  }'
+```
+https://api.dallas-idc.com/v2
 ```
 
-## Step 3: Check Available Inventory
+## Authentication
 
-List available server configurations at your preferred facility:
-
-```bash
-curl https://api.dallas-idc.com/v2/facility/DFW1/stock \
-  -H "Authorization: Bearer YOUR_API_TOKEN"
-```
-
-## Step 4: Provision a Server
-
-Deploy a bare metal server with your configuration:
+All endpoints require Bearer token authentication. Include your API token in the Authorization header:
 
 ```bash
-curl -X POST https://api.dallas-idc.com/v2/instance \
-  -H "Authorization: Bearer YOUR_API_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "name": "my-server",
-    "hostname": "server.example.com",
-    "facility": "DFW1",
-    "core": "bm1.e2234.1",
-    "image": "almalinux-8",
-    "ssh_keys": ["my-key"],
-    "project_id": "PROJ-xxxxxxxx"
-  }'
+Authorization: Bearer YOUR_API_TOKEN
 ```
 
-## Step 5: Monitor Provisioning
+See the [Authentication guide](/authentication) for details on obtaining a token.
 
-Check the status of your provisioning job:
+## Response Format
 
-```bash
-curl https://api.dallas-idc.com/v2/job/JOB_ID \
-  -H "Authorization: Bearer YOUR_API_TOKEN"
+All responses are returned in JSON format. Successful responses typically include the requested data, while error responses include an error message and details.
+
+### Success Response
+
+```json
+{
+  "data": {
+    // Response data
+  }
+}
 ```
 
-## Next Steps
+### Error Response
+
+```json
+{
+  "error": "Error message",
+  "message": "Detailed description"
+}
+```
+
+## HTTP Status Codes
+
+| Code | Description |
+|------|-------------|
+| 200 | Success |
+| 201 | Created |
+| 400 | Bad Request - Invalid parameters |
+| 401 | Unauthorized - Invalid or missing token |
+| 403 | Forbidden - Insufficient permissions |
+| 404 | Not Found - Resource doesn't exist |
+| 422 | Unprocessable Entity - Validation error |
+| 429 | Too Many Requests - Rate limit exceeded |
+| 500 | Internal Server Error |
+
+## API Sections
 
 <CardGroup cols={2}>
-  <Card
-    title="Authentication"
-    icon="key"
-    href="/authentication"
-  >
-    Learn more about API authentication
+  <Card title="User" icon="user" href="/api-reference/user/current-user">
+    Get current user information
   </Card>
-  <Card
-    title="API Reference"
-    icon="code"
-    href="/api-reference/introduction"
-  >
-    Explore all available endpoints
+  <Card title="Facilities" icon="building" href="/api-reference/facilities/list-facilities">
+    List datacenters and check stock
+  </Card>
+  <Card title="SSH Keys" icon="key" href="/api-reference/ssh-keys/list-ssh-keys">
+    Manage SSH keys for server access
+  </Card>
+  <Card title="Images" icon="compact-disc" href="/api-reference/images/list-images">
+    Available operating system images
+  </Card>
+  <Card title="Cores" icon="microchip" href="/api-reference/cores/list-cores">
+    Server configurations and specs
+  </Card>
+  <Card title="Projects" icon="folder" href="/api-reference/projects/get-project">
+    Organize resources by project
+  </Card>
+  <Card title="Instances" icon="server" href="/api-reference/instances/list-instances">
+    Deploy and manage servers
+  </Card>
+  <Card title="Jobs" icon="clock" href="/api-reference/jobs/get-job">
+    Monitor async operations
   </Card>
 </CardGroup>

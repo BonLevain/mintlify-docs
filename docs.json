@@ -24,9 +24,6 @@
           },
           {
             "group": "API documentation",
-            "pages": [
-              "api-reference/introduction"
-            ],
             "openapi": "api-reference/openapi.json"
           }
         ]
