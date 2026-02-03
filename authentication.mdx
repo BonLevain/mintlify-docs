@@ -1,0 +1,67 @@
+---
+title: 'Authentication'
+description: 'Learn how to authenticate with the Limestone Networks API'
+---
+
+## Authentication Overview
+
+The Limestone Networks API uses Bearer token authentication. All API requests must include an `Authorization` header with your API token.
+
+## Getting Your API Token
+
+<Steps>
+  <Step title="Sign In">
+    Log into [OnePortal](https://one.limestonenetworks.com) with your Limestone Networks account
+  </Step>
+  <Step title="Navigate to API Settings">
+    Go to Account Settings > API Tokens
+  </Step>
+  <Step title="Generate Token">
+    Click "Create New Token" and provide a descriptive name
+  </Step>
+  <Step title="Copy and Secure">
+    Copy your token immediately - it won't be shown again. Store it securely.
+  </Step>
+</Steps>
+
+## Using Your Token
+
+Include your token in the `Authorization` header of every API request:
+
+```bash
+curl https://api.dallas-idc.com/v2/current_user \
+  -H "Authorization: Bearer YOUR_API_TOKEN"
+```
+
+## Token Security Best Practices
+
+<Warning>
+  Never share your API token or commit it to version control. Treat it like a password.
+</Warning>
+
+- **Rotate tokens regularly** - Generate new tokens periodically and revoke old ones
+- **Use environment variables** - Store tokens in environment variables, not in code
+- **Limit scope** - Create separate tokens for different applications
+- **Monitor usage** - Review API activity for unauthorized access
+
+## Example: Environment Variable Usage
+
+```bash
+# Set your token as an environment variable
+export LIMESTONE_API_TOKEN="your_token_here"
+
+# Use it in API calls
+curl https://api.dallas-idc.com/v2/current_user \
+  -H "Authorization: Bearer $LIMESTONE_API_TOKEN"
+```
+
+## Error Responses
+
+| Status Code | Description |
+|-------------|-------------|
+| 401 | Unauthorized - Invalid or missing token |
+| 403 | Forbidden - Token doesn't have required permissions |
+
+## Rate Limiting
+
+The API implements rate limiting to ensure fair usage. If you exceed the rate limit, you'll receive a `429 Too Many Requests` response. Wait before retrying.

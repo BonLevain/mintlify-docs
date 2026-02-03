@@ -1,0 +1,101 @@
+---
+title: 'Get Current User'
+api: 'GET /current_user'
+description: 'Retrieve information about the currently authenticated user'
+---
+
+## Overview
+
+Returns details about the user associated with the current API token, including account information and client ID.
+
+<RequestExample>
+
+```bash cURL
+curl https://api.dallas-idc.com/v2/current_user \
+  -H "Authorization: Bearer YOUR_API_TOKEN"
+```
+
+```python Python
+import requests
+
+response = requests.get(
+    "https://api.dallas-idc.com/v2/current_user",
+    headers={"Authorization": "Bearer YOUR_API_TOKEN"}
+)
+print(response.json())
+```
+
+```javascript JavaScript
+const response = await fetch('https://api.dallas-idc.com/v2/current_user', {
+  headers: {
+    'Authorization': 'Bearer YOUR_API_TOKEN'
+  }
+});
+const data = await response.json();
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json 200 - Success
+{
+  "username": "user@example.com",
+  "id": 123456,
+  "client_id": 789012,
+  "firstname": "John",
+  "lastname": "Doe",
+  "force_pwd_change": 0,
+  "active": 1,
+  "email": "user@example.com"
+}
+```
+
+```json 401 - Unauthorized
+{
+  "error": "Unauthorized",
+  "message": "Invalid or expired token"
+}
+```
+
+</ResponseExample>
+
+## Response Fields
+
+<ResponseField name="username" type="string">
+  The user's login username (typically email address)
+</ResponseField>
+
+<ResponseField name="id" type="integer">
+  Unique user identifier
+</ResponseField>
+
+<ResponseField name="client_id" type="integer">
+  The associated client/account ID
+</ResponseField>
+
+<ResponseField name="firstname" type="string">
+  User's first name
+</ResponseField>
+
+<ResponseField name="lastname" type="string">
+  User's last name
+</ResponseField>
+
+<ResponseField name="force_pwd_change" type="integer">
+  Password change requirement flag (0 = not required, 1 = required)
+</ResponseField>
+
+<ResponseField name="active" type="integer">
+  Account active status (0 = inactive, 1 = active)
+</ResponseField>
+
+<ResponseField name="email" type="string">
+  User's email address
+</ResponseField>
+
+## Use Cases
+
+- **Verify Authentication**: Confirm your API token is valid and working
+- **Get Client ID**: Retrieve the `client_id` needed for other API calls
+- **Account Information**: Display user details in your application

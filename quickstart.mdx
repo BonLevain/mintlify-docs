@@ -1,0 +1,100 @@
+---
+title: 'Quickstart'
+description: 'Deploy your first bare metal server in minutes'
+---
+
+## Getting Started with Limestone Networks
+
+This guide will walk you through deploying your first server using the Limestone Networks API.
+
+## Prerequisites
+
+Before you begin, you'll need:
+
+1. A Limestone Networks account - [Sign up here](https://one.limestonenetworks.com)
+2. An API token from your account dashboard
+3. An SSH key for server access
+
+## Step 1: Generate an API Token
+
+<Steps>
+  <Step title="Log into OnePortal">
+    Navigate to [one.limestonenetworks.com](https://one.limestonenetworks.com) and sign in
+  </Step>
+  <Step title="Access API Settings">
+    Go to your account settings and find the API tokens section
+  </Step>
+  <Step title="Create a Token">
+    Generate a new token and save it securely - you won't be able to see it again
+  </Step>
+</Steps>
+
+## Step 2: Upload Your SSH Key
+
+Before provisioning a server, upload your SSH public key:
+
+```bash
+curl -X POST https://api.dallas-idc.com/v2/sshkey \
+  -H "Authorization: Bearer YOUR_API_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "my-key",
+    "pubkey": "ssh-ed25519 AAAA... user@hostname"
+  }'
+```
+
+## Step 3: Check Available Inventory
+
+List available server configurations at your preferred facility:
+
+```bash
+curl https://api.dallas-idc.com/v2/facility/DFW1/stock \
+  -H "Authorization: Bearer YOUR_API_TOKEN"
+```
+
+## Step 4: Provision a Server
+
+Deploy a bare metal server with your configuration:
+
+```bash
+curl -X POST https://api.dallas-idc.com/v2/instance \
+  -H "Authorization: Bearer YOUR_API_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "my-server",
+    "hostname": "server.example.com",
+    "facility": "DFW1",
+    "core": "bm1.e2234.1",
+    "image": "almalinux-8",
+    "ssh_keys": ["my-key"],
+    "project_id": "PROJ-xxxxxxxx"
+  }'
+```
+
+## Step 5: Monitor Provisioning
+
+Check the status of your provisioning job:
+
+```bash
+curl https://api.dallas-idc.com/v2/job/JOB_ID \
+  -H "Authorization: Bearer YOUR_API_TOKEN"
+```
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Authentication"
+    icon="key"
+    href="/authentication"
+  >
+    Learn more about API authentication
+  </Card>
+  <Card
+    title="API Reference"
+    icon="code"
+    href="/api-reference/introduction"
+  >
+    Explore all available endpoints
+  </Card>
+</CardGroup>

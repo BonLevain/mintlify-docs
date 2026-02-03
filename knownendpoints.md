@@ -1,9 +1,13 @@
+# Docs information
+
+[x] General info about the company and why you should choose them by browsing to limestonenetworks.com
+
 # Known GET API Endpoints
 
 - [ ] `https://api.dallas-idc.com/v2/facility/{LOCATION}/stock`
   - Known locations: DFW1, LAX1, SLC1, JFK1, DFW2, MIA1, ORD1, FRA1, PDX1, PAR1, TYO1, IAD1, LAX2, JFK2, TYO2, FRA2, SIN1, SLC2, AMS1, TYO1 Leased, ORD2, MIA2
 
-- [ ] `https://api.dallas-idc.com/v2/current_user`
+- [x] `https://api.dallas-idc.com/v2/current_user`
 
 - [ ] `https://api.dallas-idc.com/v2/sshkey`
 

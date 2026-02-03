@@ -1,0 +1,124 @@
+{
+  "$schema": "https://mintlify.com/schema.json",
+  "name": "Limestone Networks",
+  "logo": {
+    "dark": "/logo/dark.svg",
+    "light": "/logo/light.svg"
+  },
+  "favicon": "/favicon.svg",
+  "colors": {
+    "primary": "#0D9373",
+    "light": "#07C983",
+    "dark": "#0D9373",
+    "anchors": {
+      "from": "#0D9373",
+      "to": "#07C983"
+    }
+  },
+  "topbarLinks": [
+    {
+      "name": "Support",
+      "url": "https://www.limestonenetworks.com/support"
+    }
+  ],
+  "topbarCtaButton": {
+    "name": "Dashboard",
+    "url": "https://one.limestonenetworks.com"
+  },
+  "tabs": [
+    {
+      "name": "API Reference",
+      "url": "api-reference"
+    }
+  ],
+  "anchors": [
+    {
+      "name": "Community",
+      "icon": "slack",
+      "url": "https://www.limestonenetworks.com/community"
+    },
+    {
+      "name": "Blog",
+      "icon": "newspaper",
+      "url": "https://www.limestonenetworks.com/blog"
+    }
+  ],
+  "navigation": [
+    {
+      "group": "Get Started",
+      "pages": [
+        "introduction",
+        "quickstart",
+        "authentication"
+      ]
+    },
+    {
+      "group": "API Reference",
+      "pages": [
+        "api-reference/introduction"
+      ]
+    },
+    {
+      "group": "User",
+      "pages": [
+        "api-reference/user/current-user"
+      ]
+    },
+    {
+      "group": "Facilities",
+      "pages": [
+        "api-reference/facilities/list-facilities",
+        "api-reference/facilities/facility-stock"
+      ]
+    },
+    {
+      "group": "SSH Keys",
+      "pages": [
+        "api-reference/ssh-keys/list-ssh-keys",
+        "api-reference/ssh-keys/create-ssh-key"
+      ]
+    },
+    {
+      "group": "Images",
+      "pages": [
+        "api-reference/images/list-images"
+      ]
+    },
+    {
+      "group": "Cores",
+      "pages": [
+        "api-reference/cores/list-cores"
+      ]
+    },
+    {
+      "group": "Projects",
+      "pages": [
+        "api-reference/projects/get-project",
+        "api-reference/projects/list-projects"
+      ]
+    },
+    {
+      "group": "Instances",
+      "pages": [
+        "api-reference/instances/list-instances",
+        "api-reference/instances/create-instance"
+      ]
+    },
+    {
+      "group": "Jobs",
+      "pages": [
+        "api-reference/jobs/get-job"
+      ]
+    }
+  ],
+  "footerSocials": {
+    "x": "https://x.com/limaborhood",
+    "linkedin": "https://www.linkedin.com/company/limestone-networks"
+  },
+  "api": {
+    "baseUrl": "https://api.dallas-idc.com/v2",
+    "auth": {
+      "method": "bearer"
+    }
+  }
+}
