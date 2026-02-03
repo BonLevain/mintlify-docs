@@ -17,13 +17,10 @@
         "tab": "API reference",
         "groups": [
           {
-            "group": "Getting started",
+            "group": "API documentation",
             "pages": [
               "quickstart"
-            ]
-          },
-          {
-            "group": "API documentation",
+            ],
             "openapi": "api-reference/openapi.json"
           }
         ]
