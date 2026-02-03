@@ -29,13 +29,8 @@
             ]
           },
           {
-            "group": "Endpoint examples",
-            "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
-            ]
+            "group": "API Reference",
+            "openapi": "api-reference/openapi.json"
           }
         ]
       }
@@ -81,8 +76,10 @@
   },
   "footer": {
     "socials": {
-      "x": "https://x.com/limaborhood",
-      "linkedin": "https://www.linkedin.com/company/limestone-networks"
+      "x": "https://x.com/LimestoneInc",
+      "linkedin": "https://www.linkedin.com/company/limestone-networks-inc/",
+      "youtube": "https://www.youtube.com/user/LimestoneLSN",
+      "facebook": "https://www.facebook.com/limestoneinc/"
     }
   }
 }
