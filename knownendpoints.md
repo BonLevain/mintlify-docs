@@ -36,7 +36,7 @@
     }
     ```
 
-- [ ] `https://api.dallas-idc.com/v2/instance`
+- [x] `https://api.dallas-idc.com/v2/instance`
   - Example payload:
     ```json
     {

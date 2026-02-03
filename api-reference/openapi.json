@@ -206,6 +206,53 @@
             }
           }
         }
+      },
+      "post": {
+        "summary": "Create Instance",
+        "description": "Provision a new bare metal server instance. This is an asynchronous operation that returns a job object to track the provisioning progress. Use the job_identifier to poll the /job/{job_id} endpoint for status updates.",
+        "operationId": "createInstance",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateInstanceRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Provisioning job created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProvisioningJob"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error or quota exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProvisioningJob"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/job/{job_id}": {
@@ -957,6 +1004,195 @@
             "type": "string"
           }
         }
+      },
+      "CreateInstanceRequest": {
+        "type": "object",
+        "description": "Request payload for creating a new bare metal server instance",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "A user-defined name for the instance"
+          },
+          "hostname": {
+            "type": "string",
+            "description": "The fully qualified domain name (FQDN) for the server"
+          },
+          "facility": {
+            "type": "string",
+            "description": "The datacenter location code (e.g., DFW1, LAX1)"
+          },
+          "core": {
+            "type": "string",
+            "description": "The server configuration ID representing hardware specs (e.g., bm1.e2234.1)"
+          },
+          "image": {
+            "type": "string",
+            "description": "The operating system image to install (e.g., almalinux-8, ubuntu-noble)"
+          },
+          "ssh_keys": {
+            "type": "array",
+            "description": "List of SSH key names to add to the instance for authentication",
+            "items": {
+              "type": "string"
+            }
+          },
+          "keypair": {
+            "type": "string",
+            "description": "Alternative to ssh_keys - a single SSH key name (deprecated, use ssh_keys instead)"
+          },
+          "user_data": {
+            "type": "string",
+            "description": "Cloud-init user data script for instance initialization (e.g., #cloud-config)"
+          },
+          "networks": {
+            "type": "array",
+            "description": "List of network types to attach to the instance",
+            "items": {
+              "type": "string",
+              "enum": ["public", "private"]
+            }
+          },
+          "os_disk": {
+            "type": "string",
+            "description": "The disk device path for OS installation (e.g., /dev/nvme0n1)"
+          },
+          "partitions": {
+            "type": "array",
+            "description": "Custom disk partition configuration (empty array for default partitioning)",
+            "items": {
+              "type": "object"
+            }
+          },
+          "admin_password": {
+            "type": "string",
+            "description": "Optional administrator password for the server"
+          },
+          "tags": {
+            "type": "array",
+            "description": "User-defined tags for organizing and filtering instances",
+            "items": {
+              "type": "string"
+            }
+          },
+          "quantity": {
+            "type": "integer",
+            "description": "Number of identical instances to provision (default: 1)",
+            "minimum": 1,
+            "default": 1
+          },
+          "custom_metadata": {
+            "type": "object",
+            "description": "User-defined key-value pairs for custom instance metadata",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "custom_image": {
+            "type": "string",
+            "description": "URL or identifier for a custom OS image (alternative to standard image)"
+          },
+          "project_id": {
+            "type": "string",
+            "description": "The project ID to associate this instance with (e.g., PROJ-8ad55d52)"
+          }
+        },
+        "required": ["name", "hostname", "facility", "core", "image", "networks", "os_disk", "project_id"]
+      },
+      "ProvisioningJob": {
+        "type": "object",
+        "description": "Asynchronous job tracking object for instance provisioning operations",
+        "properties": {
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "ISO 8601 timestamp when the job was created"
+          },
+          "name": {
+            "type": "string",
+            "description": "Internal job name identifier"
+          },
+          "display_name": {
+            "type": "string",
+            "description": "Human-readable job name"
+          },
+          "status": {
+            "type": "string",
+            "description": "Current status of the provisioning job",
+            "enum": ["pending", "running", "completed", "failed"]
+          },
+          "job_identifier": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for tracking the job status via /job/{job_id}"
+          },
+          "metadata": {
+            "type": "array",
+            "description": "Additional job metadata",
+            "items": {
+              "type": "object"
+            }
+          },
+          "statuses": {
+            "type": "array",
+            "description": "Detailed status history of the provisioning process",
+            "items": {
+              "$ref": "#/components/schemas/JobStatus"
+            }
+          }
+        },
+        "required": ["created_at", "name", "display_name", "status", "job_identifier", "statuses"]
+      },
+      "JobStatus": {
+        "type": "object",
+        "description": "Individual status entry in the provisioning job history",
+        "properties": {
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "ISO 8601 timestamp when this status was created"
+          },
+          "update_time": {
+            "type": "string",
+            "format": "date-time",
+            "description": "ISO 8601 timestamp when this status was last updated"
+          },
+          "status": {
+            "type": "string",
+            "description": "Status of this job step",
+            "enum": ["create", "start", "running", "completed", "failed"]
+          },
+          "attempt": {
+            "type": "integer",
+            "description": "Attempt number for this job step"
+          },
+          "metadata": {
+            "type": "array",
+            "description": "Additional metadata including error details if failed",
+            "items": {
+              "$ref": "#/components/schemas/JobStatusMetadata"
+            }
+          },
+          "job_type": {
+            "type": "string",
+            "description": "The type of operation being performed in this step"
+          }
+        },
+        "required": ["created_at", "update_time", "status", "attempt", "job_type"]
+      },
+      "JobStatusMetadata": {
+        "type": "object",
+        "description": "Key-value metadata for job status entries",
+        "properties": {
+          "key": {
+            "type": "string",
+            "description": "Metadata key (e.g., 'errors')"
+          },
+          "value": {
+            "type": "string",
+            "description": "Metadata value (may contain JSON-encoded error details)"
+          }
+        },
+        "required": ["key", "value"]
       }
     },
     "securitySchemes": {
