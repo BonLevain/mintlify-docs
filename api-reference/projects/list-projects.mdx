@@ -1,0 +1,196 @@
+---
+title: 'List Projects'
+api: 'GET /project'
+description: 'Retrieve a list of all projects for a client account, optionally including quota information'
+---
+
+## Overview
+
+Returns a list of all projects associated with your client account. Projects are used to organize and group related resources like instances. You can optionally include quota information to see resource limits and current usage.
+
+## Query Parameters
+
+<ParamField query="client_id" type="integer">
+  Filter projects by client ID. If omitted, returns projects for the authenticated user's client account.
+</ParamField>
+
+<ParamField query="include_quotas" type="integer">
+  Set to `1` to include quota information in the response. When enabled, each project will include resource limits and current usage statistics.
+</ParamField>
+
+<RequestExample>
+
+```bash cURL
+curl https://api.dallas-idc.com/v2/project \
+  -H "Authorization: Bearer YOUR_API_TOKEN"
+```
+
+```bash cURL (with quotas)
+curl "https://api.dallas-idc.com/v2/project?include_quotas=1&client_id=557923" \
+  -H "Authorization: Bearer YOUR_API_TOKEN"
+```
+
+```python Python
+import requests
+
+# List all projects
+response = requests.get(
+    "https://api.dallas-idc.com/v2/project",
+    headers={"Authorization": "Bearer YOUR_API_TOKEN"}
+)
+print(response.json())
+
+# List projects with quota information
+response = requests.get(
+    "https://api.dallas-idc.com/v2/project",
+    params={"include_quotas": 1, "client_id": 557923},
+    headers={"Authorization": "Bearer YOUR_API_TOKEN"}
+)
+print(response.json())
+```
+
+```javascript JavaScript
+// List all projects
+const response = await fetch('https://api.dallas-idc.com/v2/project', {
+  headers: {
+    'Authorization': 'Bearer YOUR_API_TOKEN'
+  }
+});
+const projects = await response.json();
+
+// List projects with quota information
+const quotaResponse = await fetch('https://api.dallas-idc.com/v2/project?include_quotas=1&client_id=557923', {
+  headers: {
+    'Authorization': 'Bearer YOUR_API_TOKEN'
+  }
+});
+const projectsWithQuotas = await quotaResponse.json();
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json 200 - Success
+[
+  {
+    "uuid": "8ad55d52-c4a7-473a-8831-d20c49021538",
+    "short_uuid": "8ad55d52",
+    "project_id": "PROJ-8ad55d52",
+    "status": "Online",
+    "name": null,
+    "metadata": [],
+    "item_type": "project",
+    "create_date": "2025-11-28 22:47:34",
+    "client_id": 557923,
+    "unpaid_invoices": 0
+  }
+]
+```
+
+```json 200 - Success (with quotas)
+[
+  {
+    "uuid": "8ad55d52-c4a7-473a-8831-d20c49021538",
+    "short_uuid": "8ad55d52",
+    "project_id": "PROJ-8ad55d52",
+    "status": "Online",
+    "name": null,
+    "metadata": [],
+    "item_type": "project",
+    "create_date": "2025-11-28 22:47:34",
+    "client_id": 557923,
+    "quotas": {
+      "max_ips": 5,
+      "max_servers": 0,
+      "used_servers": 0,
+      "used_ips": 0
+    },
+    "unpaid_invoices": 0
+  }
+]
+```
+
+```json 200 - Empty (no projects)
+[]
+```
+
+```json 401 - Unauthorized
+{
+  "error": "Unauthorized",
+  "message": "Invalid or expired token"
+}
+```
+
+</ResponseExample>
+
+## Response Fields
+
+<ResponseField name="uuid" type="string">
+  The full UUID of the project (e.g., `8ad55d52-c4a7-473a-8831-d20c49021538`)
+</ResponseField>
+
+<ResponseField name="short_uuid" type="string">
+  The shortened UUID used in the project_id (e.g., `8ad55d52`)
+</ResponseField>
+
+<ResponseField name="project_id" type="string">
+  The unique project identifier in the format `PROJ-{short_uuid}`
+</ResponseField>
+
+<ResponseField name="status" type="string">
+  The current status of the project. Possible values include:
+  - `Online` - Project is active and operational
+  - `Suspended` - Project has been suspended
+</ResponseField>
+
+<ResponseField name="name" type="string | null">
+  The user-defined name for the project, or `null` if not set
+</ResponseField>
+
+<ResponseField name="metadata" type="array">
+  Array of key-value pairs containing custom project metadata
+</ResponseField>
+
+<ResponseField name="item_type" type="string">
+  The type of resource, always `project` for this endpoint
+</ResponseField>
+
+<ResponseField name="create_date" type="string">
+  The date and time when the project was created (format: `YYYY-MM-DD HH:MM:SS`)
+</ResponseField>
+
+<ResponseField name="client_id" type="integer">
+  The unique identifier of the client account that owns this project
+</ResponseField>
+
+<ResponseField name="quotas" type="object">
+  Resource quota information (only included when `include_quotas=1`). Contains:
+  - `max_ips` - Maximum number of IP addresses allowed
+  - `max_servers` - Maximum number of servers allowed (0 = unlimited)
+  - `used_servers` - Current number of provisioned servers
+  - `used_ips` - Current number of allocated IP addresses
+</ResponseField>
+
+<ResponseField name="unpaid_invoices" type="integer">
+  The number of unpaid invoices associated with this project
+</ResponseField>
+
+## Quotas Object
+
+When `include_quotas=1` is specified, each project includes a `quotas` object:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `max_ips` | integer | Maximum number of IP addresses the project can use |
+| `max_servers` | integer | Maximum number of servers allowed (0 = unlimited) |
+| `used_servers` | integer | Number of servers currently provisioned |
+| `used_ips` | integer | Number of IP addresses currently in use |
+
+## Use Cases
+
+- **Account Overview**: List all projects to get a high-level view of your infrastructure organization
+- **Capacity Planning**: Include quotas to understand resource limits and current usage
+- **Billing Review**: Check for unpaid invoices across all projects
+- **Multi-Project Management**: Retrieve all projects when managing multiple environments or clients
+- **Automation**: Programmatically enumerate projects for infrastructure-as-code workflows

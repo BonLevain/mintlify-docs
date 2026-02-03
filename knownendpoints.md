@@ -23,7 +23,7 @@
 
 - [x] `https://api.dallas-idc.com/v2/job/{JOB_ID}` (Monitoring job status)
 
-- [ ] `https://api.dallas-idc.com/v2/project?include_quotas=1&client_id={CLIENT_ID}`
+- [x] `https://api.dallas-idc.com/v2/project?include_quotas=1&client_id={CLIENT_ID}`
 
 # Known POST Endpoints
 
