@@ -12,72 +12,43 @@
   },
   "favicon": "/favicon.svg",
   "navigation": {
-    "tabs": [
+    "groups": [
       {
-        "tab": "API Reference",
-        "products": [
-          {
-            "product": "Getting Started",
-            "icon": "rocket",
-            "groups": [
-              {
-                "group": "Overview",
-                "pages": [
-                  "index",
-                  "quickstart",
-	          "authentication"
-                ]
-              }
-            ]
-          },
-          {
-            "product": "Instances",
-            "description": "Deploy and manage bare metal servers",
-            "icon": "server",
-            "groups": [
-              {
-                "group": "Endpoints",
-                "pages": [
-                  "GET /instance",
-                  "POST /instance",
-                  "GET /job/{job_id}"
-                ]
-              }
-            ]
-          },
-          {
-            "product": "Infrastructure",
-            "description": "Server configurations, datacenters, and OS images",
-            "icon": "building",
-            "groups": [
-              {
-                "group": "Endpoints",
-                "pages": [
-                  "GET /core",
-                  "GET /facility",
-                  "GET /facility/{location}/stock",
-                  "GET /image"
-                ]
-              }
-            ]
-          },
-          {
-            "product": "Account",
-            "description": "Projects, SSH keys, and user management",
-            "icon": "user",
-            "groups": [
-              {
-                "group": "Endpoints",
-                "pages": [
-                  "GET /project",
-                  "GET /project/{project_id}",
-                  "GET /sshkey",
-                  "POST /sshkey",
-                  "GET /current_user"
-                ]
-              }
-            ]
-          }
+        "group": "Overview",
+        "pages": [
+          "index",
+          "quickstart",
+          "authentication"
+        ]
+      },
+      {
+        "group": "Instances",
+        "openapi": "api-reference/openapi.json",
+        "pages": [
+          "GET /instance",
+          "POST /instance",
+          "GET /job/{job_id}"
+        ]
+      },
+      {
+        "group": "Infrastructure",
+        "openapi": "api-reference/openapi.json",
+        "pages": [
+          "GET /core",
+          "GET /facility",
+          "GET /facility/{location}/stock",
+          "GET /image"
+        ]
+      },
+      {
+        "group": "Account",
+        "openapi": "api-reference/openapi.json",
+        "pages": [
+          "GET /project",
+          "GET /project/{project_id}",
+          "GET /sshkey",
+          "POST /sshkey",
+          "GET /current_user"
         ]
       }
     ],
