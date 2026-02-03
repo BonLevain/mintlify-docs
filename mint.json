@@ -43,13 +43,12 @@
     {
       "group": "Get Started",
       "pages": [
-        "introduction",
         "quickstart",
         "authentication"
       ]
     },
     {
-      "group": "API Reference",
+      "group": "API Reference DAWG",
       "pages": [
         "api-reference/introduction"
       ]

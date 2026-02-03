@@ -2,7 +2,10 @@ Hi you are running in a loop as an expert technical writer for the dedicated hos
 
 1. Thoroughly read the LLMS.txt file for Mintlify to understand the format: https://www.mintlify.com/docs/llms.txt
 2. Read the knownendpoints.md and select the next most logical endpoint to implement. If all are completed, exit cleanly.
-3. Implement it in the playground
-4. Mark it as complete in knownendpoints.md
-5. Make a new local git commit.
-6. Exit cleanly
+3. Implement it in the playground by testing the endpoint and retrieving the request/response formats and status codes.
+4. Be sure to add the endpoint and models to api-reference/openapi.json
+5. Mark it as complete in knownendpoints.md
+6. Make a new local git commit.
+7. Exit cleanly
+
+IMPORTANT: To get request/response formats you can test the api endpoints with Bearer token: eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiI0IiwianRpIjoiZDdkY2E1M2IwMTFmNjY2YTYxODA5YmM2MzA0MmVkNTZkNzBmNDg0OGE3ZDZjNGJjOTYzYzc3MDEwOGYzMmFlNjg0ZWQ1MDk5MTEzMmRkMWQiLCJpYXQiOjE3NzAwODU0MjcuODQ4OTg5LCJuYmYiOjE3NzAwODU0MjcuODQ4OTk5LCJleHAiOjE3NzAwOTk4MjcuNjQ1NDA0MSwic3ViIjoiNTIwOTQ1Iiwic2NvcGVzIjpbIioiXX0.Pe5yTZvX__PRPGl0mVzEvIWMsncTtL7xfv3bT9AE7WObk8utw2fNwje2N_MHisTHsq0mGLpkGABehKCc5QYtbQ_WfO18TUBt6ibFBTucjsrXkqbh8BbaNggYof7H7SmOMx3qu66ve2JBHCkZLA241Q4Qk3hnFTkwwxJhIFFLaK6XvAhCRVwAfNlJxTuUmz1AY0Op7VM_32uboc3MGufaPRZBcIkgSBjtJsvLefi-oPvywldEyYcJgivKzyDppS4qoMG6pbSqOGMtxucxZl9moBxPsyhynccaBiM5mENqI8C0lRG_FTKr0e8cQZadC9bnTL0DZvELzh1ZB2EOJva_8xeteErwxBT96drllcwAq4lU09E_tTSMUyr328F_f9iDOrusNXQ3k8sGGxkkHPHLUFPpm7S4NBtINgjK70Ue0y8iN9wb4SfatskFuD55LiWdW15hFzYnLdkYATlQPxg-5VR40PcB_nIxfMlRg89yuHNJqjR53JcrWPf6pG43fk51SKoy6P2gecPBVnXSf_ZoR-KJJTD0nwstW-h3NWuwW_WHqj2k7r48tXXiBRlQof5Gci-02CQfgfXK2dqXXv42wNx0WcCsOXlvrRmDQyx5Z7W3iKsAIU1kb5AHS9Y_yZNwvxrvhPB_oQBfSMhgDQ50G9hE9EaVE_q2bnzOikikOho
