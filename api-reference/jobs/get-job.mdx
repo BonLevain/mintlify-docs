@@ -1,0 +1,210 @@
+---
+title: 'Get Job Status'
+api: 'GET /job/{job_id}'
+description: 'Retrieve the status and details of an asynchronous provisioning job'
+---
+
+## Overview
+
+Returns the current status and details of an asynchronous job. Jobs are created when you perform long-running operations such as provisioning a new server instance. Use this endpoint to monitor the progress of these operations.
+
+## Path Parameters
+
+<ParamField path="job_id" type="string" required>
+  The unique job identifier. This is returned when you initiate an asynchronous operation like creating an instance.
+</ParamField>
+
+<RequestExample>
+
+```bash cURL
+curl https://api.dallas-idc.com/v2/job/abc12345-6789-0def-ghij-klmnopqrstuv \
+  -H "Authorization: Bearer YOUR_API_TOKEN"
+```
+
+```python Python
+import requests
+
+job_id = "abc12345-6789-0def-ghij-klmnopqrstuv"
+response = requests.get(
+    f"https://api.dallas-idc.com/v2/job/{job_id}",
+    headers={"Authorization": "Bearer YOUR_API_TOKEN"}
+)
+print(response.json())
+```
+
+```javascript JavaScript
+const jobId = 'abc12345-6789-0def-ghij-klmnopqrstuv';
+const response = await fetch(`https://api.dallas-idc.com/v2/job/${jobId}`, {
+  headers: {
+    'Authorization': 'Bearer YOUR_API_TOKEN'
+  }
+});
+const data = await response.json();
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json 200 - Job In Progress
+{
+  "uuid": "abc12345-6789-0def-ghij-klmnopqrstuv",
+  "short_uuid": "abc12345",
+  "status": "running",
+  "type": "provision",
+  "progress": 45,
+  "message": "Installing operating system",
+  "resource_type": "instance",
+  "resource_id": "INST-a1b2c3d4",
+  "create_date": "2025-01-20 14:30:00",
+  "started_at": "2025-01-20 14:30:05",
+  "completed_at": null
+}
+```
+
+```json 200 - Job Completed
+{
+  "uuid": "abc12345-6789-0def-ghij-klmnopqrstuv",
+  "short_uuid": "abc12345",
+  "status": "completed",
+  "type": "provision",
+  "progress": 100,
+  "message": "Server provisioning completed successfully",
+  "resource_type": "instance",
+  "resource_id": "INST-a1b2c3d4",
+  "create_date": "2025-01-20 14:30:00",
+  "started_at": "2025-01-20 14:30:05",
+  "completed_at": "2025-01-20 14:45:22"
+}
+```
+
+```json 200 - Job Failed
+{
+  "uuid": "abc12345-6789-0def-ghij-klmnopqrstuv",
+  "short_uuid": "abc12345",
+  "status": "failed",
+  "type": "provision",
+  "progress": 30,
+  "message": "Failed to allocate requested hardware",
+  "error": "No available servers matching the requested configuration",
+  "resource_type": "instance",
+  "resource_id": null,
+  "create_date": "2025-01-20 14:30:00",
+  "started_at": "2025-01-20 14:30:05",
+  "completed_at": "2025-01-20 14:32:15"
+}
+```
+
+```json 401 - Unauthorized
+{
+  "error": "Unauthorized",
+  "message": "Invalid or expired token"
+}
+```
+
+```json 404 - Not Found
+{
+  "error": "Not Found",
+  "message": "Job not found"
+}
+```
+
+</ResponseExample>
+
+## Response Fields
+
+<ResponseField name="uuid" type="string">
+  The full UUID of the job (e.g., `abc12345-6789-0def-ghij-klmnopqrstuv`)
+</ResponseField>
+
+<ResponseField name="short_uuid" type="string">
+  The shortened UUID for the job (e.g., `abc12345`)
+</ResponseField>
+
+<ResponseField name="status" type="string">
+  The current status of the job. Possible values:
+  - `pending` - Job is queued but not yet started
+  - `running` - Job is currently in progress
+  - `completed` - Job finished successfully
+  - `failed` - Job encountered an error and stopped
+  - `cancelled` - Job was cancelled by the user
+</ResponseField>
+
+<ResponseField name="type" type="string">
+  The type of operation being performed. Possible values:
+  - `provision` - Server provisioning
+  - `deprovision` - Server termination
+  - `reboot` - Server restart
+  - `reinstall` - Operating system reinstallation
+</ResponseField>
+
+<ResponseField name="progress" type="integer">
+  The completion percentage of the job (0-100)
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  A human-readable description of the current job step or final result
+</ResponseField>
+
+<ResponseField name="error" type="string">
+  Error message if the job failed. Only present when `status` is `failed`
+</ResponseField>
+
+<ResponseField name="resource_type" type="string">
+  The type of resource this job is operating on (e.g., `instance`)
+</ResponseField>
+
+<ResponseField name="resource_id" type="string | null">
+  The ID of the resource being created or modified. May be `null` if the resource hasn't been created yet or if the job failed before creation.
+</ResponseField>
+
+<ResponseField name="create_date" type="string">
+  The date and time when the job was created (format: `YYYY-MM-DD HH:MM:SS`)
+</ResponseField>
+
+<ResponseField name="started_at" type="string | null">
+  The date and time when the job started executing, or `null` if still pending
+</ResponseField>
+
+<ResponseField name="completed_at" type="string | null">
+  The date and time when the job completed, or `null` if still in progress
+</ResponseField>
+
+## Polling for Job Status
+
+When provisioning a server, you'll receive a job ID in the response. Poll this endpoint periodically to check the status:
+
+```python Python
+import requests
+import time
+
+def wait_for_job(job_id, token, timeout=600, interval=10):
+    """Poll job status until completion or timeout."""
+    headers = {"Authorization": f"Bearer {token}"}
+    start_time = time.time()
+
+    while time.time() - start_time < timeout:
+        response = requests.get(
+            f"https://api.dallas-idc.com/v2/job/{job_id}",
+            headers=headers
+        )
+        job = response.json()
+
+        if job["status"] == "completed":
+            print(f"Job completed! Resource ID: {job['resource_id']}")
+            return job
+        elif job["status"] == "failed":
+            raise Exception(f"Job failed: {job.get('error', job['message'])}")
+
+        print(f"Progress: {job['progress']}% - {job['message']}")
+        time.sleep(interval)
+
+    raise TimeoutError("Job did not complete within timeout period")
+```
+
+## Use Cases
+
+- **Provisioning Monitoring**: Track the progress of server deployments
+- **Error Handling**: Detect and respond to provisioning failures
+- **Automation**: Build automated workflows that wait for operations to complete
+- **Status Reporting**: Display provisioning progress in dashboards or CI/CD pipelines
