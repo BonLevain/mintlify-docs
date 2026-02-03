@@ -1,0 +1,102 @@
+---
+title: 'List SSH Keys'
+api: 'GET /sshkey'
+description: 'Retrieve all SSH keys associated with your account'
+---
+
+## Overview
+
+Returns a list of all SSH public keys that have been added to your account. These keys can be used when provisioning new server instances to enable SSH access.
+
+<RequestExample>
+
+```bash cURL
+curl https://api.dallas-idc.com/v2/sshkey \
+  -H "Authorization: Bearer YOUR_API_TOKEN"
+```
+
+```python Python
+import requests
+
+response = requests.get(
+    "https://api.dallas-idc.com/v2/sshkey",
+    headers={"Authorization": "Bearer YOUR_API_TOKEN"}
+)
+print(response.json())
+```
+
+```javascript JavaScript
+const response = await fetch('https://api.dallas-idc.com/v2/sshkey', {
+  headers: {
+    'Authorization': 'Bearer YOUR_API_TOKEN'
+  }
+});
+const data = await response.json();
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json 200 - Success
+{
+  "keys": [
+    {
+      "id": 10652,
+      "fingerprint": "fc:df:73:1a:99:b0:39:5a:d9:eb:de:a3:cc:d4:b0:55",
+      "pubkey": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDmB9S1WXNZ9kiO...",
+      "comment": "user@hostname",
+      "name": "user@hostname"
+    }
+  ]
+}
+```
+
+```json 401 - Unauthorized
+{
+  "error": "Unauthorized",
+  "message": "Invalid or expired token"
+}
+```
+
+</ResponseExample>
+
+## Response Fields
+
+<ResponseField name="keys" type="array">
+  Array of SSH key objects associated with your account
+</ResponseField>
+
+<ResponseField name="keys[].id" type="integer">
+  Unique identifier for the SSH key
+</ResponseField>
+
+<ResponseField name="keys[].fingerprint" type="string">
+  The MD5 fingerprint of the SSH key in colon-separated hexadecimal format
+</ResponseField>
+
+<ResponseField name="keys[].pubkey" type="string">
+  The full public key string (e.g., `ssh-rsa AAAA...` or `ssh-ed25519 AAAA...`)
+</ResponseField>
+
+<ResponseField name="keys[].comment" type="string">
+  The comment field from the SSH key, typically containing `user@hostname`
+</ResponseField>
+
+<ResponseField name="keys[].name" type="string">
+  The display name for the SSH key (used when selecting keys during instance creation)
+</ResponseField>
+
+## Supported Key Types
+
+| Type | Example |
+|------|---------|
+| RSA | `ssh-rsa AAAA...` |
+| ED25519 | `ssh-ed25519 AAAA...` |
+| ECDSA | `ecdsa-sha2-nistp256 AAAA...` |
+
+## Use Cases
+
+- **Instance Provisioning**: List available keys to select when creating a new server instance
+- **Key Management**: Audit which SSH keys have access to your account
+- **Automation**: Retrieve key IDs or names for use in automated deployment scripts

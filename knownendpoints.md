@@ -9,7 +9,7 @@
 
 - [x] `https://api.dallas-idc.com/v2/current_user`
 
-- [ ] `https://api.dallas-idc.com/v2/sshkey`
+- [x] `https://api.dallas-idc.com/v2/sshkey`
 
 - [ ] `https://api.dallas-idc.com/v2/image`
 
