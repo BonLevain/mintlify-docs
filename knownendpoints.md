@@ -11,7 +11,7 @@
 
 - [x] `https://api.dallas-idc.com/v2/sshkey`
 
-- [ ] `https://api.dallas-idc.com/v2/image`
+- [x] `https://api.dallas-idc.com/v2/image`
 
 - [ ] `https://api.dallas-idc.com/v2/facility`
 

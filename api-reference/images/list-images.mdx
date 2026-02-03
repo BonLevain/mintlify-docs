@@ -1,0 +1,136 @@
+---
+title: 'List Images'
+api: 'GET /image'
+description: 'Retrieve all available operating system images for server provisioning'
+---
+
+## Overview
+
+Returns a list of all available operating system images that can be used when provisioning new server instances. These images include various Linux distributions and Windows Server editions.
+
+<RequestExample>
+
+```bash cURL
+curl https://api.dallas-idc.com/v2/image \
+  -H "Authorization: Bearer YOUR_API_TOKEN"
+```
+
+```python Python
+import requests
+
+response = requests.get(
+    "https://api.dallas-idc.com/v2/image",
+    headers={"Authorization": "Bearer YOUR_API_TOKEN"}
+)
+print(response.json())
+```
+
+```javascript JavaScript
+const response = await fetch('https://api.dallas-idc.com/v2/image', {
+  headers: {
+    'Authorization': 'Bearer YOUR_API_TOKEN'
+  }
+});
+const data = await response.json();
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json 200 - Success
+[
+  {
+    "name": "almalinux-8",
+    "displayname": "AlmaLinux 8"
+  },
+  {
+    "name": "almalinux-9",
+    "displayname": "AlmaLinux 9"
+  },
+  {
+    "name": "debian-13",
+    "displayname": "Debian 13 (Trixie)"
+  },
+  {
+    "name": "rockylinux-8",
+    "displayname": "Rocky Linux 8"
+  },
+  {
+    "name": "rockylinux-9",
+    "displayname": "Rocky Linux 9"
+  },
+  {
+    "name": "ubuntu-jammy",
+    "displayname": "Ubuntu 22.04 (Jammy)"
+  },
+  {
+    "name": "ubuntu-noble",
+    "displayname": "Ubuntu 24.04 (Noble)"
+  },
+  {
+    "name": "windows2019dc",
+    "displayname": "Windows 2019 Datacenter"
+  },
+  {
+    "name": "windows2019std",
+    "displayname": "Windows 2019 Standard"
+  },
+  {
+    "name": "windows2022dc",
+    "displayname": "Windows 2022 Datacenter"
+  },
+  {
+    "name": "windows2022std",
+    "displayname": "Windows 2022 Standard"
+  }
+]
+```
+
+```json 401 - Unauthorized
+{
+  "error": "Unauthorized",
+  "message": "Invalid or expired token"
+}
+```
+
+</ResponseExample>
+
+## Response Fields
+
+<ResponseField name="name" type="string">
+  The unique identifier for the image, used when creating instances (e.g., `almalinux-8`, `ubuntu-noble`)
+</ResponseField>
+
+<ResponseField name="displayname" type="string">
+  Human-readable name of the operating system image
+</ResponseField>
+
+## Available Images
+
+### Linux Distributions
+
+| Image Name | Display Name | Description |
+|------------|--------------|-------------|
+| `almalinux-8` | AlmaLinux 8 | RHEL 8 compatible enterprise Linux |
+| `almalinux-9` | AlmaLinux 9 | RHEL 9 compatible enterprise Linux |
+| `debian-13` | Debian 13 (Trixie) | Latest Debian release |
+| `rockylinux-8` | Rocky Linux 8 | RHEL 8 compatible community enterprise OS |
+| `rockylinux-9` | Rocky Linux 9 | RHEL 9 compatible community enterprise OS |
+| `ubuntu-jammy` | Ubuntu 22.04 (Jammy) | Ubuntu LTS release |
+| `ubuntu-noble` | Ubuntu 24.04 (Noble) | Latest Ubuntu LTS release |
+
+### Windows Server
+
+| Image Name | Display Name | Description |
+|------------|--------------|-------------|
+| `windows2019dc` | Windows 2019 Datacenter | Full-featured Windows Server |
+| `windows2019std` | Windows 2019 Standard | Standard Windows Server edition |
+| `windows2022dc` | Windows 2022 Datacenter | Latest full-featured Windows Server |
+| `windows2022std` | Windows 2022 Standard | Latest standard Windows Server edition |
+
+## Use Cases
+
+- **Instance Provisioning**: Select an image when creating a new bare metal server instance
+- **Automation**: Retrieve available images to dynamically populate deployment scripts
+- **Inventory**: Check which operating systems are currently supported
