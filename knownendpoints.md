@@ -15,7 +15,7 @@
 
 - [x] `https://api.dallas-idc.com/v2/facility`
 
-- [ ] `https://api.dallas-idc.com/v2/core`
+- [x] `https://api.dallas-idc.com/v2/core`
 
 - [ ] `https://api.dallas-idc.com/v2/project/{PROJECT_NAME}`
 

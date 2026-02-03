@@ -1,0 +1,197 @@
+---
+title: 'List Cores'
+api: 'GET /core'
+description: 'Retrieve all available server configurations (cores) with pricing and specifications'
+---
+
+## Overview
+
+Returns a list of all available server configurations (called "cores") that can be provisioned. Each core represents a specific hardware configuration including CPU, memory, storage, and network specifications along with hourly pricing.
+
+<RequestExample>
+
+```bash cURL
+curl https://api.dallas-idc.com/v2/core \
+  -H "Authorization: Bearer YOUR_API_TOKEN"
+```
+
+```python Python
+import requests
+
+response = requests.get(
+    "https://api.dallas-idc.com/v2/core",
+    headers={"Authorization": "Bearer YOUR_API_TOKEN"}
+)
+print(response.json())
+```
+
+```javascript JavaScript
+const response = await fetch('https://api.dallas-idc.com/v2/core', {
+  headers: {
+    'Authorization': 'Bearer YOUR_API_TOKEN'
+  }
+});
+const data = await response.json();
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json 200 - Success
+[
+  {
+    "id": "bm1.e2234.1",
+    "name": "Intel Xeon E-2234",
+    "rate": 0.15,
+    "interval": "hourly",
+    "description": "",
+    "default_disk": "/dev/nvme0n1",
+    "metadata": [
+      {"key": "cpus", "value": "1"},
+      {"key": "cpu_model", "value": "Intel Xeon E-2234"},
+      {"key": "cpu_cores", "value": "4"},
+      {"key": "memory", "value": "32GB"},
+      {"key": "disk_size", "value": "512GB"},
+      {"key": "disk_count", "value": "1"},
+      {"key": "disk_type", "value": "NVMe"},
+      {"key": "nic_speed", "value": "1Gbps"},
+      {"key": "nic_count", "value": "2"}
+    ]
+  },
+  {
+    "id": "bm1.epyc7402.1",
+    "name": "AMD EPYC 7402",
+    "rate": 1.03,
+    "interval": "hourly",
+    "description": "",
+    "default_disk": "/dev/nvme0n1",
+    "metadata": [
+      {"key": "cpus", "value": "1"},
+      {"key": "cpu_model", "value": "AMD EPYC 7402"},
+      {"key": "cpu_cores", "value": "24"},
+      {"key": "memory", "value": "128GB"},
+      {"key": "disk_size", "value": "960GB"},
+      {"key": "disk_count", "value": "2"},
+      {"key": "disk_type", "value": "NVMe"},
+      {"key": "nic_speed", "value": "1Gbps"},
+      {"key": "nic_count", "value": "2"}
+    ]
+  },
+  {
+    "id": "bm1.ryzen7950x.1",
+    "name": "AMD Ryzen 7950X",
+    "rate": 0.376,
+    "interval": "hourly",
+    "description": "",
+    "default_disk": "/dev/nvme0n1",
+    "metadata": [
+      {"key": "cpus", "value": "1"},
+      {"key": "cpu_model", "value": "AMD Ryzen 7950X"},
+      {"key": "cpu_cores", "value": "16"},
+      {"key": "memory", "value": "128GB"},
+      {"key": "disk_size", "value": "960GB"},
+      {"key": "disk_count", "value": "2"},
+      {"key": "disk_type", "value": "NVMe"},
+      {"key": "nic_speed", "value": "10Gbps"},
+      {"key": "nic_count", "value": "2"}
+    ]
+  }
+]
+```
+
+```json 401 - Unauthorized
+{
+  "error": "Unauthorized",
+  "message": "Invalid or expired token"
+}
+```
+
+</ResponseExample>
+
+## Response Fields
+
+<ResponseField name="id" type="string">
+  The unique identifier for the core configuration, used when creating instances (e.g., `bm1.e2234.1`, `bm1.epyc7402.1`)
+</ResponseField>
+
+<ResponseField name="name" type="string">
+  Human-readable name of the server configuration, typically the CPU model
+</ResponseField>
+
+<ResponseField name="rate" type="number">
+  The price per interval (hourly rate in USD)
+</ResponseField>
+
+<ResponseField name="interval" type="string">
+  The billing interval for the rate (currently `hourly` for all cores)
+</ResponseField>
+
+<ResponseField name="description" type="string">
+  Optional description of the server configuration
+</ResponseField>
+
+<ResponseField name="default_disk" type="string">
+  The default disk device path for OS installation (e.g., `/dev/nvme0n1`, `/dev/sda`)
+</ResponseField>
+
+<ResponseField name="metadata" type="array">
+  Array of key-value pairs containing hardware specifications
+</ResponseField>
+
+## Metadata Fields
+
+Each core includes detailed hardware specifications in the `metadata` array:
+
+| Key | Description | Example Values |
+|-----|-------------|----------------|
+| `cpus` | Number of physical CPUs | `1`, `2` |
+| `cpu_model` | CPU model name | `Intel Xeon E-2234`, `AMD EPYC 7402` |
+| `cpu_cores` | Number of cores per CPU | `4`, `6`, `12`, `16`, `24` |
+| `memory` | Total RAM | `32GB`, `64GB`, `128GB`, `256GB` |
+| `disk_size` | Storage capacity per disk | `512GB`, `960GB`, `1.92TB`, `3.84TB` |
+| `disk_count` | Number of disks | `1`, `2`, `4` |
+| `disk_type` | Storage technology | `NVMe`, `SSD`, `HDD` |
+| `nic_speed` | Network interface speed | `1Gbps`, `10Gbps` |
+| `nic_count` | Number of network interfaces | `2` |
+
+## Available Cores
+
+### Entry-Level Servers
+
+| Core ID | CPU | Cores | Memory | Storage | Rate/hr |
+|---------|-----|-------|--------|---------|---------|
+| `bm1.e2234.1` | Intel Xeon E-2234 | 4 | 32GB | 512GB NVMe | $0.15 |
+| `bm1.e2276g.1` | Intel Xeon E-2276G | 6 | 64GB | 512GB NVMe (x2) | $0.20 |
+| `bm1.e2236.1` | Intel Xeon E-2236 | 6 | 64GB | 960GB NVMe (x2) | $0.25 |
+
+### Mid-Range Servers
+
+| Core ID | CPU | Cores | Memory | Storage | Rate/hr |
+|---------|-----|-------|--------|---------|---------|
+| `bm1.ryzen7600x.1` | AMD Ryzen 7600X | 6 | 64GB | 960GB NVMe (x2) | $0.27 |
+| `bm1.ryzen7950x.1` | AMD Ryzen 7950X | 16 | 128GB | 960GB NVMe (x2) | $0.38 |
+| `bm1.ryzen5950x.1` | AMD Ryzen 9 5950X | 16 | 128GB | 960GB NVMe (x2) | $0.42 |
+
+### High-Performance Servers
+
+| Core ID | CPU | Cores | Memory | Storage | Rate/hr |
+|---------|-----|-------|--------|---------|---------|
+| `bm1.epyc7282.1` | AMD EPYC 7282 | 16 | 128GB | 960GB NVMe (x2) | $0.70 |
+| `bm1.epyc7402.1` | AMD EPYC 7402 | 24 | 128GB | 960GB NVMe (x2) | $1.03 |
+| `bm1.xeon6142x2.1` | Dual Intel Xeon Gold 6142 | 32 | 192GB | 3.84TB SSD (x2) | $0.78 |
+
+### Enterprise Dual-Socket Servers
+
+| Core ID | CPU | Cores | Memory | Storage | Rate/hr |
+|---------|-----|-------|--------|---------|---------|
+| `bm1.epyc7282x2.1` | Dual AMD EPYC 7282 | 32 | 256GB | 1.92TB NVMe (x4) | $1.77 |
+| `bm1.epyc7402x2.1` | Dual AMD EPYC 7402 | 48 | 256GB | 1.92TB NVMe (x4) | $2.48 |
+| `bm1.xeon6142x2.2` | Dual Intel Xeon Gold 6142 | 32 | 256GB | 6.4TB NVMe (x2) | $0.75 |
+
+## Use Cases
+
+- **Instance Provisioning**: Select a core configuration when creating a new bare metal server instance
+- **Capacity Planning**: Review available hardware configurations and pricing for infrastructure planning
+- **Cost Estimation**: Calculate expected costs based on hourly rates before deployment
+- **Hardware Selection**: Compare CPU, memory, and storage options to match workload requirements
