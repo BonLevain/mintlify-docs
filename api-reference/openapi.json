@@ -1,16 +1,16 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "OpenAPI Plant Store",
-    "description": "A sample API that uses a plant store as an example to demonstrate features in the OpenAPI specification",
+    "title": "Limestone Networks OnePortal API",
+    "description": "API for managing bare metal server infrastructure",
     "license": {
       "name": "MIT"
     },
-    "version": "1.0.0"
+    "version": "2.0.0"
   },
   "servers": [
     {
-      "url": "http://sandbox.mintlify.com"
+      "url": "https://api.dallas-idc.com/v2"
     }
   ],
   "security": [
@@ -19,72 +19,27 @@
     }
   ],
   "paths": {
-    "/plants": {
+    "/core": {
       "get": {
-        "description": "Returns all plants from the system that the user has access to",
-        "parameters": [
-          {
-            "name": "limit",
-            "in": "query",
-            "description": "The maximum number of results to return",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
+        "summary": "List Cores",
+        "description": "Retrieve all available server configurations (cores) with pricing and specifications",
+        "operationId": "listCores",
         "responses": {
           "200": {
-            "description": "Plant response",
+            "description": "List of available server configurations",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/Plant"
+                    "$ref": "#/components/schemas/Core"
                   }
                 }
               }
             }
           },
-          "400": {
-            "description": "Unexpected error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "description": "Creates a new plant in the store",
-        "requestBody": {
-          "description": "Plant to add to the store",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/NewPlant"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "plant response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Plant"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "unexpected error",
+          "401": {
+            "description": "Unauthorized",
             "content": {
               "application/json": {
                 "schema": {
@@ -96,28 +51,363 @@
         }
       }
     },
-    "/plants/{id}": {
-      "delete": {
-        "description": "Deletes a single plant based on the ID supplied",
+    "/facility": {
+      "get": {
+        "summary": "List Facilities",
+        "description": "Retrieve all available datacenter facilities",
+        "operationId": "listFacilities",
+        "responses": {
+          "200": {
+            "description": "List of available datacenter facilities",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Facility"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/facility/{location}/stock": {
+      "get": {
+        "summary": "Get Facility Stock",
+        "description": "Retrieve server availability information for a specific datacenter location",
+        "operationId": "getFacilityStock",
         "parameters": [
           {
-            "name": "id",
+            "name": "location",
             "in": "path",
-            "description": "ID of plant to delete",
+            "description": "The facility code (e.g., DFW1, LAX1, SLC1)",
             "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int64"
+              "type": "string"
             }
           }
         ],
         "responses": {
-          "204": {
-            "description": "Plant deleted",
-            "content": {}
+          "200": {
+            "description": "Server availability for the specified facility",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FacilityStock"
+                }
+              }
+            }
           },
-          "400": {
-            "description": "unexpected error",
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Facility not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/image": {
+      "get": {
+        "summary": "List Images",
+        "description": "Retrieve all available operating system images for server provisioning",
+        "operationId": "listImages",
+        "responses": {
+          "200": {
+            "description": "List of available OS images",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Image"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/instance": {
+      "get": {
+        "summary": "List Instances",
+        "description": "Retrieve a list of all bare metal server instances, optionally filtered by project",
+        "operationId": "listInstances",
+        "parameters": [
+          {
+            "name": "project",
+            "in": "query",
+            "description": "Filter instances by project ID (e.g., PROJ-8ad55d52)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of server instances",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Instance"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/job/{job_id}": {
+      "get": {
+        "summary": "Get Job Status",
+        "description": "Retrieve the status and details of an asynchronous provisioning job",
+        "operationId": "getJob",
+        "parameters": [
+          {
+            "name": "job_id",
+            "in": "path",
+            "description": "The unique job identifier",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Job status and details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Job"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Job not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/project": {
+      "get": {
+        "summary": "List Projects",
+        "description": "Retrieve a list of all projects for a client account, optionally including quota information",
+        "operationId": "listProjects",
+        "parameters": [
+          {
+            "name": "client_id",
+            "in": "query",
+            "description": "Filter projects by client ID",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "include_quotas",
+            "in": "query",
+            "description": "Set to 1 to include quota information in the response",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "enum": [0, 1]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of projects",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Project"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/project/{project_id}": {
+      "get": {
+        "summary": "Get Project",
+        "description": "Retrieve details for a specific project by its ID",
+        "operationId": "getProject",
+        "parameters": [
+          {
+            "name": "project_id",
+            "in": "path",
+            "description": "The unique project identifier (e.g., PROJ-8ad55d52)",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Project details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Project"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Project not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sshkey": {
+      "get": {
+        "summary": "List SSH Keys",
+        "description": "Retrieve all SSH keys associated with your account",
+        "operationId": "listSshKeys",
+        "responses": {
+          "200": {
+            "description": "SSH keys response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SshKeyResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/current_user": {
+      "get": {
+        "summary": "Get Current User",
+        "description": "Retrieve information about the currently authenticated user",
+        "operationId": "getCurrentUser",
+        "responses": {
+          "200": {
+            "description": "Current user information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
             "content": {
               "application/json": {
                 "schema": {
@@ -130,81 +420,472 @@
       }
     }
   },
-  "webhooks": {
-    "/plant/webhook": {
-      "post": {
-        "description": "Information about a new plant added to the store",
-        "requestBody": {
-          "description": "Plant added to the store",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/NewPlant"
-              }
+  "components": {
+    "schemas": {
+      "Core": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The unique identifier for the core configuration (e.g., bm1.e2234.1)"
+          },
+          "name": {
+            "type": "string",
+            "description": "Human-readable name of the server configuration"
+          },
+          "rate": {
+            "type": "number",
+            "description": "The price per interval (hourly rate in USD)"
+          },
+          "interval": {
+            "type": "string",
+            "description": "The billing interval for the rate",
+            "enum": ["hourly"]
+          },
+          "description": {
+            "type": "string",
+            "description": "Optional description of the server configuration"
+          },
+          "default_disk": {
+            "type": "string",
+            "description": "The default disk device path for OS installation (e.g., /dev/nvme0n1)"
+          },
+          "metadata": {
+            "type": "array",
+            "description": "Array of key-value pairs containing hardware specifications",
+            "items": {
+              "$ref": "#/components/schemas/CoreMetadata"
             }
           }
         },
-        "responses": {
-          "200": {
-            "description": "Return a 200 status to indicate that the data was received successfully"
+        "required": ["id", "name", "rate", "interval", "default_disk", "metadata"]
+      },
+      "CoreMetadata": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "description": "The metadata key (e.g., cpus, cpu_model, memory)"
+          },
+          "value": {
+            "type": "string",
+            "description": "The metadata value"
           }
-        }
-      }
-    }
-  },
-  "components": {
-    "schemas": {
-      "Plant": {
-        "required": [
-          "name"
-        ],
+        },
+        "required": ["key", "value"]
+      },
+      "Facility": {
+        "type": "object",
+        "properties": {
+          "facility_name": {
+            "type": "string",
+            "description": "The unique facility code (e.g., DFW1, LAX1)"
+          },
+          "facility_title": {
+            "type": "string",
+            "description": "Human-readable title including city, state/country, and facility code"
+          },
+          "facility_description": {
+            "type": "string",
+            "description": "Short description of the facility"
+          }
+        },
+        "required": ["facility_name", "facility_title", "facility_description"]
+      },
+      "FacilityStock": {
+        "type": "object",
+        "properties": {
+          "facility": {
+            "type": "string",
+            "description": "The facility code that was queried"
+          },
+          "available": {
+            "type": "array",
+            "description": "List of server core types that are immediately available for deployment",
+            "items": {
+              "type": "string"
+            }
+          },
+          "low": {
+            "type": "array",
+            "description": "List of server core types with limited availability",
+            "items": {
+              "type": "string"
+            }
+          },
+          "unavailable": {
+            "type": "array",
+            "description": "List of server core types that are currently out of stock",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": ["facility", "available", "low", "unavailable"]
+      },
+      "Image": {
         "type": "object",
         "properties": {
           "name": {
-            "description": "The name of the plant",
-            "type": "string"
+            "type": "string",
+            "description": "The unique identifier for the image (e.g., almalinux-8, ubuntu-noble)"
           },
-          "tag": {
-            "description": "Tag to specify the type",
-            "type": "string"
+          "displayname": {
+            "type": "string",
+            "description": "Human-readable name of the operating system image"
           }
-        }
+        },
+        "required": ["name", "displayname"]
       },
-      "NewPlant": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/Plant"
+      "Instance": {
+        "type": "object",
+        "properties": {
+          "uuid": {
+            "type": "string",
+            "description": "The full UUID of the instance"
           },
-          {
-            "required": [
-              "id"
-            ],
+          "short_uuid": {
+            "type": "string",
+            "description": "The shortened UUID for the instance"
+          },
+          "name": {
+            "type": "string",
+            "description": "The user-defined name for the instance"
+          },
+          "hostname": {
+            "type": "string",
+            "description": "The fully qualified domain name assigned to the instance"
+          },
+          "status": {
+            "type": "string",
+            "description": "The current status of the instance",
+            "enum": ["Provisioning", "Online", "Offline", "Rebooting", "Suspended", "Deleting"]
+          },
+          "facility": {
+            "type": "string",
+            "description": "The data center location code where the instance is deployed"
+          },
+          "core": {
+            "type": "string",
+            "description": "The server configuration ID representing the hardware specs"
+          },
+          "image": {
+            "type": "string",
+            "description": "The operating system image installed on the instance"
+          },
+          "os_disk": {
+            "type": "string",
+            "description": "The disk device path where the operating system is installed"
+          },
+          "networks": {
+            "type": "array",
+            "description": "List of network types attached to the instance",
+            "items": {
+              "type": "string",
+              "enum": ["public", "private"]
+            }
+          },
+          "ssh_keys": {
+            "type": "array",
+            "description": "List of SSH key names added to the instance",
+            "items": {
+              "type": "string"
+            }
+          },
+          "tags": {
+            "type": "array",
+            "description": "User-defined tags for organizing and filtering instances",
+            "items": {
+              "type": "string"
+            }
+          },
+          "metadata": {
+            "type": "array",
+            "description": "Array of key-value pairs containing system-defined metadata",
+            "items": {
+              "type": "object"
+            }
+          },
+          "custom_metadata": {
             "type": "object",
-            "properties": {
-              "id": {
-                "description": "Identification number of the plant",
-                "type": "integer",
-                "format": "int64"
-              }
+            "description": "User-defined key-value pairs for custom instance metadata",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "project_id": {
+            "type": "string",
+            "description": "The project ID this instance belongs to"
+          },
+          "item_type": {
+            "type": "string",
+            "description": "The type of resource",
+            "enum": ["instance"]
+          },
+          "create_date": {
+            "type": "string",
+            "description": "The date and time when the instance was created (YYYY-MM-DD HH:MM:SS)"
+          },
+          "ip_addresses": {
+            "type": "array",
+            "description": "List of IP addresses assigned to the instance",
+            "items": {
+              "$ref": "#/components/schemas/IpAddress"
             }
           }
-        ]
+        },
+        "required": ["uuid", "short_uuid", "name", "status", "facility", "core", "image", "project_id", "item_type", "create_date"]
+      },
+      "IpAddress": {
+        "type": "object",
+        "properties": {
+          "address": {
+            "type": "string",
+            "description": "The IP address assigned to the instance"
+          },
+          "type": {
+            "type": "string",
+            "description": "Network type: public or private",
+            "enum": ["public", "private"]
+          },
+          "gateway": {
+            "type": "string",
+            "description": "The gateway IP address for this network"
+          },
+          "netmask": {
+            "type": "string",
+            "description": "The subnet mask"
+          }
+        },
+        "required": ["address", "type", "gateway", "netmask"]
+      },
+      "Job": {
+        "type": "object",
+        "properties": {
+          "uuid": {
+            "type": "string",
+            "description": "The full UUID of the job"
+          },
+          "short_uuid": {
+            "type": "string",
+            "description": "The shortened UUID for the job"
+          },
+          "status": {
+            "type": "string",
+            "description": "The current status of the job",
+            "enum": ["pending", "running", "completed", "failed", "cancelled"]
+          },
+          "type": {
+            "type": "string",
+            "description": "The type of operation being performed",
+            "enum": ["provision", "deprovision", "reboot", "reinstall"]
+          },
+          "progress": {
+            "type": "integer",
+            "description": "The completion percentage of the job (0-100)",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "message": {
+            "type": "string",
+            "description": "A human-readable description of the current job step or final result"
+          },
+          "error": {
+            "type": "string",
+            "description": "Error message if the job failed"
+          },
+          "resource_type": {
+            "type": "string",
+            "description": "The type of resource this job is operating on"
+          },
+          "resource_id": {
+            "type": ["string", "null"],
+            "description": "The ID of the resource being created or modified"
+          },
+          "create_date": {
+            "type": "string",
+            "description": "The date and time when the job was created (YYYY-MM-DD HH:MM:SS)"
+          },
+          "started_at": {
+            "type": ["string", "null"],
+            "description": "The date and time when the job started executing"
+          },
+          "completed_at": {
+            "type": ["string", "null"],
+            "description": "The date and time when the job completed"
+          }
+        },
+        "required": ["uuid", "short_uuid", "status", "type", "progress", "message", "resource_type", "create_date"]
+      },
+      "Project": {
+        "type": "object",
+        "properties": {
+          "uuid": {
+            "type": "string",
+            "description": "The full UUID of the project"
+          },
+          "short_uuid": {
+            "type": "string",
+            "description": "The shortened UUID used in the project_id"
+          },
+          "project_id": {
+            "type": "string",
+            "description": "The unique project identifier in the format PROJ-{short_uuid}"
+          },
+          "status": {
+            "type": "string",
+            "description": "The current status of the project",
+            "enum": ["Online", "Suspended"]
+          },
+          "name": {
+            "type": ["string", "null"],
+            "description": "The user-defined name for the project"
+          },
+          "metadata": {
+            "type": "array",
+            "description": "Array of key-value pairs containing custom project metadata",
+            "items": {
+              "type": "object"
+            }
+          },
+          "item_type": {
+            "type": "string",
+            "description": "The type of resource",
+            "enum": ["project"]
+          },
+          "create_date": {
+            "type": "string",
+            "description": "The date and time when the project was created (YYYY-MM-DD HH:MM:SS)"
+          },
+          "client_id": {
+            "type": "integer",
+            "description": "The unique identifier of the client account that owns this project"
+          },
+          "quotas": {
+            "$ref": "#/components/schemas/Quotas",
+            "description": "Resource quota information (only included when include_quotas=1)"
+          },
+          "unpaid_invoices": {
+            "type": "integer",
+            "description": "The number of unpaid invoices associated with this project"
+          }
+        },
+        "required": ["uuid", "short_uuid", "project_id", "status", "item_type", "create_date", "client_id", "unpaid_invoices"]
+      },
+      "Quotas": {
+        "type": "object",
+        "properties": {
+          "max_ips": {
+            "type": "integer",
+            "description": "Maximum number of IP addresses allowed"
+          },
+          "max_servers": {
+            "type": "integer",
+            "description": "Maximum number of servers allowed (0 = unlimited)"
+          },
+          "used_servers": {
+            "type": "integer",
+            "description": "Current number of provisioned servers"
+          },
+          "used_ips": {
+            "type": "integer",
+            "description": "Current number of allocated IP addresses"
+          }
+        },
+        "required": ["max_ips", "max_servers", "used_servers", "used_ips"]
+      },
+      "SshKey": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Unique identifier for the SSH key"
+          },
+          "fingerprint": {
+            "type": "string",
+            "description": "The MD5 fingerprint of the SSH key in colon-separated hexadecimal format"
+          },
+          "pubkey": {
+            "type": "string",
+            "description": "The full public key string"
+          },
+          "comment": {
+            "type": "string",
+            "description": "The comment field from the SSH key"
+          },
+          "name": {
+            "type": "string",
+            "description": "The display name for the SSH key"
+          }
+        },
+        "required": ["id", "fingerprint", "pubkey", "name"]
+      },
+      "SshKeyResponse": {
+        "type": "object",
+        "properties": {
+          "keys": {
+            "type": "array",
+            "description": "Array of SSH key objects associated with your account",
+            "items": {
+              "$ref": "#/components/schemas/SshKey"
+            }
+          }
+        },
+        "required": ["keys"]
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "description": "The user's login username"
+          },
+          "id": {
+            "type": "integer",
+            "description": "Unique user identifier"
+          },
+          "client_id": {
+            "type": "integer",
+            "description": "The associated client/account ID"
+          },
+          "firstname": {
+            "type": "string",
+            "description": "User's first name"
+          },
+          "lastname": {
+            "type": "string",
+            "description": "User's last name"
+          },
+          "force_pwd_change": {
+            "type": "integer",
+            "description": "Password change requirement flag (0 = not required, 1 = required)",
+            "enum": [0, 1]
+          },
+          "active": {
+            "type": "integer",
+            "description": "Account active status (0 = inactive, 1 = active)",
+            "enum": [0, 1]
+          },
+          "email": {
+            "type": "string",
+            "description": "User's email address"
+          }
+        },
+        "required": ["username", "id", "client_id", "firstname", "lastname", "force_pwd_change", "active", "email"]
       },
       "Error": {
-        "required": [
-          "error",
-          "message"
-        ],
         "type": "object",
         "properties": {
           "error": {
-            "type": "integer",
-            "format": "int32"
+            "type": "string",
+            "description": "Error type"
           },
           "message": {
-            "type": "string"
+            "type": "string",
+            "description": "Error message"
           }
-        }
+        },
+        "required": ["error", "message"]
       }
     },
     "securitySchemes": {
