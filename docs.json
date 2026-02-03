@@ -22,33 +22,36 @@
         ]
       },
       {
-        "group": "Instances",
+        "group": "API Reference",
         "openapi": "api-reference/openapi.json",
         "pages": [
-          "GET /instance",
-          "POST /instance",
-          "GET /job/{job_id}"
-        ]
-      },
-      {
-        "group": "Infrastructure",
-        "openapi": "api-reference/openapi.json",
-        "pages": [
-          "GET /core",
-          "GET /facility",
-          "GET /facility/{location}/stock",
-          "GET /image"
-        ]
-      },
-      {
-        "group": "Account",
-        "openapi": "api-reference/openapi.json",
-        "pages": [
-          "GET /project",
-          "GET /project/{project_id}",
-          "GET /sshkey",
-          "POST /sshkey",
-          "GET /current_user"
+          {
+            "group": "Account",
+            "pages": [
+              "GET /current_user",
+              "GET /project",
+              "GET /project/{project_id}",
+              "GET /sshkey",
+              "POST /sshkey"
+            ]
+          },
+          {
+            "group": "Infrastructure",
+            "pages": [
+              "GET /core",
+              "GET /facility",
+              "GET /facility/{location}/stock",
+              "GET /image"
+            ]
+          },
+          {
+            "group": "Instances",
+            "pages": [
+              "GET /instance",
+              "GET /job/{job_id}",
+              "POST /instance"
+            ]
+          }
         ]
       }
     ],
